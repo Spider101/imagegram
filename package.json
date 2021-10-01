@@ -1,0 +1,10 @@
+{
+  "name": "imagegram",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Abhimanyu Banerjee <banerjee.abhimanyu3@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
+}
