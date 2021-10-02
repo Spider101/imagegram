@@ -4,7 +4,24 @@
   "main": "index.js",
   "author": "Abhimanyu Banerjee <banerjee.abhimanyu3@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon --config nodemon.json src/api/index.ts"
+  },
   "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/mongoose": "^5.10.5",
+    "@types/node": "^16.10.2",
+    "@types/pino": "^6.3.11",
+    "nodemon": "^2.0.13",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.7",
+    "pino": "^6.13.3",
+    "pino-pretty": "^4.7.1"
   }
 }
