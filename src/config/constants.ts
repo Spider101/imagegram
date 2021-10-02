@@ -15,4 +15,9 @@ const DB_NAME = process.env.MONGODB_DBNAME as string;
 
 export const DB = {
     uri: `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
-}
+};
+
+export const HEADERS = {
+    accountId: 'X-Account-Id',
+    postId: 'Post-Id'
+};
