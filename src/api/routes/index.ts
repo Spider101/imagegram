@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import { Express } from "express";
 import accountRouter from "./account.routes";
 import postRouter from "./post.routes";
 
