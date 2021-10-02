@@ -1,4 +1,4 @@
-import { Account } from './../database/models/account.model';
+import { Account } from './../database/models';
 import { DocumentDefinition } from "mongoose";
 import { AccountDocument } from "../interfaces";
 
