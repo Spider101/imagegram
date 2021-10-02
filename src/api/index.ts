@@ -1,5 +1,6 @@
 import express from 'express';
 import { LOG, SERVER } from '../config';
+import connect from './database/connect';
 
 const app = express();
 
@@ -13,4 +14,8 @@ app.get('/healthcheck', (_req, res) => {
     res.send(healthcheck);
 });
 
-app.listen(SERVER.port, () => LOG.info(`Listening on port: ${SERVER.port}`));
+app.listen(SERVER.port, () => {
+    LOG.info(`Listening on port: ${SERVER.port}`);
+
+    connect();
+});
