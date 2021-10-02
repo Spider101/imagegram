@@ -36,7 +36,7 @@ paths:
             type: string
             format: uuid
       requestBody:
-        description: Post entity that needs to be created
+        description: Data needed to create the post entity
         content:
           application/json:
             schema:
@@ -54,6 +54,42 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
                   - $ref: '#/components/schemas/Post'
+  /comment:
+    post:
+      summary: Add a new comment on a post
+      parameters:
+        - name: X-Account-Id
+          in: header
+          description: Account Id of user making the request
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: Post-Id
+          in: header
+          description: Post Id of post on which comment is being made
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Data needed to create the comment entity
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Created a comment
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DocumentId'
+                  - $ref: '#/components/schemas/Comment'
 components:
   schemas:
     DocumentId:
