@@ -1,0 +1,40 @@
+openapi: 3.0.1
+info:
+  title: Imagegram
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+paths:
+  /account:
+    post:
+      summary: Add a new account
+      requestBody:
+        description: Account entity that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+        required: true
+      responses:
+        '201':
+          description: Created an account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+components:
+  schemas:
+    Account:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: '5363e62d-57ef-424c-8538-527388854b0e'
+        name:
+          type: string
+          example: 'Joshua'
