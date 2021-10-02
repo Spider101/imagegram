@@ -117,6 +117,9 @@ components:
         createdAt:
           type: string
           format: date-time
+        postId:
+          type: string
+          format: uuid
     Post:
       type: object
       properties:
