@@ -9,14 +9,11 @@ paths:
     post:
       summary: Add a new account
       requestBody:
-        description: Account entity that needs to be added to the store
+        description: Account entity that needs to be created
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/Account'
         required: true
       responses:
         '201':
@@ -24,17 +21,80 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                allOf:
+                - $ref: '#/components/schemas/DocumentId'
+                - $ref: '#/components/schemas/Account'
+  /post:
+    post:
+      summary: Add a new post
+      parameters:
+        - name: X-Account-Id
+          in: header
+          description: Account Id of user making the request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Post entity that needs to be created
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+        required: true
+      responses:
+        '201':
+          description: Created a post
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DocumentId'
+                  - $ref: '#/components/schemas/Post'
 components:
   schemas:
+    DocumentId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '5363e62d-57ef-424c-8538-527388854b0e'
     Account:
       required:
         - name
       type: object
       properties:
-        id:
-          type: string
-          example: '5363e62d-57ef-424c-8538-527388854b0e'
         name:
           type: string
           example: 'Joshua'
+    Comment:
+      type: object
+      properties:
+        content:
+          type: string
+        creator:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    Post:
+      type: object
+      properties:
+        caption:
+          type: string
+        creator:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        comments:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/DocumentId'
+            - $ref: '#/components/schemas/Comment'
