@@ -2,6 +2,9 @@
 node_modules
 yarn-error.log
 
+# storage
+public/uploads/*
+
 # misc
 .vscode
 .env
