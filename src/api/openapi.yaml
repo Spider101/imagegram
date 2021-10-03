@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:3001
 paths:
-  /account:
+  /accounts:
     post:
       summary: Add a new account
       requestBody:
@@ -24,7 +24,7 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/DocumentId'
                 - $ref: '#/components/schemas/Account'
-  /account/{accountId}:
+  /accounts/{accountId}:
     delete:
       summary: Delete all data related to user's account
       parameters:
@@ -37,7 +37,7 @@ paths:
       responses:
         '204':
           description: Successfully deleted user's account with all associated data
-  /post:
+  /posts:
     post:
       summary: Add a new post
       requestBody:
@@ -59,11 +59,62 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
                   - $ref: '#/components/schemas/Post'
+                  - type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          type: string
+                          example: "1b0b31bc-bac0-4d7e-81bb-7cbf67b80fe8"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - accountAuth: []
-  /comment:
+    get:
+      summary: Fetch all posts by all users
+      responses:
+        '200':
+          description: Successfully fetched all posts
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - totalItems
+                  - posts
+                  - totalPages
+                  - currentPage
+                properties:
+                  totalItems:
+                    type: integer
+                    example: 1
+                  posts:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/DocumentId'
+                        - $ref: '#/components/schemas/Post'
+                        - type: object
+                          properties:
+                            comments:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: '#/components/schemas/DocumentId'
+                                  - $ref: '#/components/schemas/Comment'
+                  totalPages:
+                    type: integer
+                    example: 1
+                  currentPage:
+                    type: integer
+                    example: 1
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal Server Error. Something might have gone wrong with fetching the posts from the MongoDB cluster.
+      security:
+        - accountAuth: []
+  /comments:
     post:
       summary: Add a new comment on a post
       parameters:
@@ -91,6 +142,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
+                  - $ref: '#/components/schemas/PostId'
                   - $ref: '#/components/schemas/Comment'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
@@ -117,6 +169,11 @@ components:
           type: string
           format: uuid
           example: '5363e62d-57ef-424c-8538-527388854b0e'
+    PostId:
+      properties:
+        postId:
+          type: string
+          format: uuid
     Account:
       required:
         - name
@@ -136,9 +193,6 @@ components:
         createdAt:
           type: string
           format: date-time
-        postId:
-          type: string
-          format: uuid
     Post:
       type: object
       properties:
