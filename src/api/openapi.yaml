@@ -110,6 +110,8 @@ paths:
                     example: 1
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal Server Error. Something might have gone wrong with fetching the posts from the MongoDB cluster.
       security:
         - accountAuth: []
   /comments:
