@@ -1,9 +1,9 @@
 import express from "express";
 import { createPostHandler } from "../controllers";
-import { requireAccountHeader } from "../middlewares";
+import { requireAccountHeader, uploadImage } from "../middlewares";
 
 const postRouter = express.Router();
 
-postRouter.post('/', requireAccountHeader, createPostHandler);
+postRouter.post('/', [uploadImage(), requireAccountHeader], createPostHandler);
 
 export default postRouter;

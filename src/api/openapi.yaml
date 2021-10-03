@@ -144,15 +144,11 @@ components:
       properties:
         caption:
           type: string
+        image:
+          type: string
         creator:
           type: string
           format: uuid
         createdAt:
           type: string
           format: date-time
-        comments:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/DocumentId'
-            - $ref: '#/components/schemas/Comment'

@@ -5,6 +5,7 @@ import { LOG, HEADERS } from '../../config';
 export async function createCommentHandler(req: Request, res: Response) {
     const accountId = req.header(HEADERS.accountId);
     const postId = req.header(HEADERS.postId);
+    // TODO: check if post exists before creating comment; return 404 if not
     LOG.info(`User with accountId: ${accountId} created comment on post with ID: ${postId}`);
 
     const createdComment = await createComment({
