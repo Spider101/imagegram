@@ -146,6 +146,10 @@ paths:
                   - $ref: '#/components/schemas/Comment'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '400':
+          description: Bad request. Possibly malformed or missing Post-Id header.
+        '404':
+          description: Missing document for Post entity. Cannot create Comment entity on a non-existent Post entity.
       security:
         - accountAuth: []
 components:
