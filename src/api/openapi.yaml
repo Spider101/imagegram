@@ -27,14 +27,6 @@ paths:
   /post:
     post:
       summary: Add a new post
-      parameters:
-        - name: X-Account-Id
-          in: header
-          description: Account Id of user making the request
-          required: true
-          schema:
-            type: string
-            format: uuid
       requestBody:
         description: Data needed to create the post entity
         content:
@@ -54,17 +46,14 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
                   - $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+        - accountAuth: []
   /comment:
     post:
       summary: Add a new comment on a post
       parameters:
-        - name: X-Account-Id
-          in: header
-          description: Account Id of user making the request
-          required: true
-          schema:
-            type: string
-            format: uuid
         - name: Post-Id
           in: header
           description: Post Id of post on which comment is being made
@@ -90,7 +79,24 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
                   - $ref: '#/components/schemas/Comment'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+        - accountAuth: []
 components:
+  securitySchemes:
+    accountAuth:
+      type: apiKey
+      in: header
+      name: X-Account-Id
+      description: Header to secure endpoints. A valid accountId needs to be passed in.
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
   schemas:
     DocumentId:
       properties:
