@@ -24,7 +24,7 @@ export async function fetchAllPosts(page: string, size: string): Promise<Paginat
     const options = {
         populate: {
             path: 'comments',
-            options: { limit: 2 }
+            options: { perDocumentLimit: 2 }
         },
         offset,
         limit,

@@ -8,7 +8,7 @@ const PostSchema = new mongoose.Schema({
     creator: { type: String, required: true },
     image: { type: String, required: true },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-    numComments: Number
+    numComments: { type: Number, index: true }
 }, { timestamps: true });
 
 PostSchema.plugin(mongoosePaginate);
