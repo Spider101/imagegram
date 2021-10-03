@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import { isValidObjectId } from "mongoose";
+import { NextFunction, Request, Response } from 'express';
+import { isValidObjectId } from 'mongoose';
 
 import { HEADERS } from '../../config/constants';
-import { Post } from "../database/models";
+import { Post } from '../database/models';
 
-export async function requirePostIdHeader(req: Request, res: Response, next: NextFunction) {
+export async function requirePostIdHeader(req: Request, res: Response, next: NextFunction): Promise<void> {
     const postId = req.header(HEADERS.postId);
     if (postId && isValidObjectId(postId)) {
         const doesPostExist = await Post.exists({ _id: postId });

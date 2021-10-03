@@ -15,4 +15,4 @@ AccountSchema.pre<Query<AccountDocument, AccountDocument>>('deleteOne', async fu
     await Comment.deleteMany({ creator: account._id });
 });
 
-export const Account = mongoose.model<AccountDocument>("Account", AccountSchema);
+export const Account = mongoose.model<AccountDocument>('Account', AccountSchema);

@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 import { createComment } from '../services';
 import { LOG, HEADERS } from '../../config';
 
-export async function createCommentHandler(req: Request, res: Response) {
+export async function createCommentHandler(req: Request, res: Response): Promise<Response> {
     const accountId = req.header(HEADERS.accountId);
     const postId = req.header(HEADERS.postId);
 

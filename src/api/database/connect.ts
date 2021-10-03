@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { LOG, DB } from '../../config';
 
-export default function() {
+export default function(): Promise<void> {
     const dbURI = DB.uri as string;
 
     return mongoose.connect(dbURI, {

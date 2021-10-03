@@ -1,6 +1,6 @@
-import { Request } from 'express';
+import { Request, RequestHandler } from 'express';
 import multer, { FileFilterCallback } from 'multer';
-import path from 'path';
+
 import { SERVER } from '../../config';
 
 const diskStorage = multer.diskStorage({
@@ -28,7 +28,7 @@ function filterExtensions(_req: Request, file: Express.Multer.File, cb: FileFilt
     }
 }
 
-export function uploadImage() {
+export function uploadImage(): RequestHandler {
     const options = {
         storage: diskStorage,
         limits: { files: 1 },

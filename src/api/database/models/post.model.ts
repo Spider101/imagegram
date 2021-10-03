@@ -9,7 +9,7 @@ const PostSchema = new mongoose.Schema({
     caption: { type: String, required: true },
     creator: { type: String, required: true },
     image: { type: String, required: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     numComments: { type: Number, index: true }
 }, { timestamps: true });
 
@@ -22,4 +22,4 @@ PostSchema.pre<Query<PostDocument, PostDocument>>('deleteMany', async function()
     await removeImage(post.image);
 });
 
-export const Post = mongoose.model<PostDocument>("Post", PostSchema);
+export const Post = mongoose.model<PostDocument>('Post', PostSchema);

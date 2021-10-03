@@ -26,6 +26,6 @@ export const HEADERS = {
 };
 
 export const ENV = {
-    isDevelopment: () => process.env.ENV === 'development',
-    isProduction: () => process.env.ENV === 'production'
+    isDevelopment: (): boolean => process.env.ENV === 'development',
+    isProduction: (): boolean => process.env.ENV === 'production'
 };
