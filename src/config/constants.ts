@@ -19,5 +19,6 @@ export const DB = {
 
 export const HEADERS = {
     accountId: 'X-Account-Id',
-    postId: 'Post-Id'
+    postId: 'Post-Id',
+    authResponseKey: 'WWW-authenticate'
 };
