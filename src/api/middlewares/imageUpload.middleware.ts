@@ -20,8 +20,10 @@ function filterExtensions(_req: Request, file: Express.Multer.File, cb: FileFilt
         file.mimetype === 'image/jpeg' ||
         file.mimetype === 'image/bmp'
     ) {
+        // mimetype of file matches expected type, so continue processing the request in the controller
         cb(null, true);
     } else {
+        // mimetype of file did not match expected type, so skip adding the file data to the request
         cb(null, false);
     }
 }
