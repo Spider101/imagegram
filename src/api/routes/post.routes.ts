@@ -1,6 +1,6 @@
-import express from "express";
-import { createPostHandler, fetchAllPostsHandler } from "../controllers";
-import { requireAccountHeader, uploadImage } from "../middlewares";
+import express from 'express';
+import { createPostHandler, fetchAllPostsHandler } from '../controllers';
+import { requireAccountHeader, uploadImage } from '../middlewares';
 
 const postRouter = express.Router();
 

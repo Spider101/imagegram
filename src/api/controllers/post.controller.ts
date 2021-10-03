@@ -1,16 +1,16 @@
+import { Request, Response } from 'express';
+
 import { LOG, HEADERS } from '../../config';
-import { Request, Response } from "express";
 import { createPost, fetchAllPosts } from '../services';
 
-export async function createPostHandler(req: Request, res: Response) {
+export async function createPostHandler(req: Request, res: Response): Promise<Response> {
     const accountId = req.header(HEADERS.accountId);
     LOG.info(`Creating post for user with accountId: ${accountId}`);
 
     if (req.file) {
         const createdPost = await createPost({
             caption: req.body.caption,
-            // @ts-ignore
-            creator: accountId
+            creator: accountId as string
         }, req.file);
 
         return res.send(createdPost);
@@ -22,8 +22,8 @@ export async function createPostHandler(req: Request, res: Response) {
     }
 }
 
-export async function fetchAllPostsHandler(req: Request, res: Response) {
-    LOG.info("Fetching all posts...");
+export async function fetchAllPostsHandler(req: Request, res: Response): Promise<Response> {
+    LOG.info('Fetching all posts...');
 
     const pageNum = req.query.page as string;
     const size = req.query.size as string;
@@ -42,9 +42,15 @@ export async function fetchAllPostsHandler(req: Request, res: Response) {
             totalPages,
             currentPage: page ? page - 1 : parseInt(pageNum)
         });
-    } catch(err: any) {
+    } catch(error: unknown) {
+        let errorMessage = '' as string;
+        if (typeof error === 'string') {
+            errorMessage = error.toUpperCase();
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
+        }
         return res.status(500).send({
-            message: err.message || 'Something went wrong while fetching all posts!'
+            message: errorMessage
         });
     }
 }

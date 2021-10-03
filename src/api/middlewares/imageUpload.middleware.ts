@@ -1,6 +1,6 @@
-import { Request } from 'express';
+import { Request, RequestHandler } from 'express';
 import multer, { FileFilterCallback } from 'multer';
-import path from 'path';
+
 import { SERVER } from '../../config';
 
 const diskStorage = multer.diskStorage({
@@ -8,7 +8,7 @@ const diskStorage = multer.diskStorage({
         cb(null, SERVER.storagePath);
     },
     filename: function(_req: Request, file: Express.Multer.File, cb) {
-        const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
+        const uniqueSuffix = '-' + Date.now() + '.jpg';
         cb(null, file.fieldname + uniqueSuffix);
     }
 });
@@ -28,7 +28,7 @@ function filterExtensions(_req: Request, file: Express.Multer.File, cb: FileFilt
     }
 }
 
-export function uploadImage() {
+export function uploadImage(): RequestHandler {
     const options = {
         storage: diskStorage,
         limits: { files: 1 },

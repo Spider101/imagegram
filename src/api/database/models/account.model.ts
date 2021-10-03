@@ -9,10 +9,10 @@ const AccountSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 AccountSchema.pre<Query<AccountDocument, AccountDocument>>('deleteOne', async function() {
-    const doc = await this.model.findOne(this.getFilter());
+    const account = await this.model.findOne(this.getFilter());
 
-    await Post.deleteMany({ creator: doc._id });
-    await Comment.deleteMany({ creator: doc._id });
+    await Post.deleteMany({ creator: account._id });
+    await Comment.deleteMany({ creator: account._id });
 });
 
-export const Account = mongoose.model<AccountDocument>("Account", AccountSchema);
+export const Account = mongoose.model<AccountDocument>('Account', AccountSchema);

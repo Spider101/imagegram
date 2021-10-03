@@ -1,4 +1,5 @@
 import { PaginateResult } from 'mongoose';
+
 import { Post } from '../database/models';
 import { getImageStoragePath, getPagination } from '../helpers';
 import { PostDocument } from '../interfaces';
@@ -7,9 +8,9 @@ export async function createPost({
     caption,
     creator
 }: {
-    caption: PostDocument["caption"],
-    creator: PostDocument["creator"],
-}, file: Express.Multer.File) {
+    caption: PostDocument['caption'],
+    creator: PostDocument['creator'],
+}, file: Express.Multer.File): Promise<PostDocument> {
     return await Post.create({
         caption,
         creator,
@@ -36,7 +37,11 @@ export async function fetchAllPosts(page: string, size: string): Promise<Paginat
 
     try {
         return await Post.paginate(condition, options);
-    } catch(error: any) {
-        throw new Error(error);
+    } catch(error: unknown) {
+        const errorMessage = error instanceof Error
+            ? error.message
+            : typeof error === 'string'
+                ? error.toUpperCase() : 'Something went wrong while fetching all posts!';
+        throw new Error(errorMessage);
     }
 }

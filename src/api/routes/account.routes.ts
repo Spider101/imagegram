@@ -1,5 +1,5 @@
-import express from "express";
-import { createAccountHandler, deleteAccountHandler } from "../controllers";
+import express from 'express';
+import { createAccountHandler, deleteAccountHandler } from '../controllers';
 
 const accountRouter = express.Router();
 
