@@ -1,0 +1,212 @@
+openapi: 3.0.1
+info:
+  title: Imagegram
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+paths:
+  /accounts:
+    post:
+      summary: Add a new account
+      requestBody:
+        description: Account entity that needs to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        '201':
+          description: Created an account
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/DocumentId'
+                - $ref: '#/components/schemas/Account'
+  /accounts/{accountId}:
+    delete:
+      summary: Delete all data related to user's account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Successfully deleted user's account with all associated data
+  /posts:
+    post:
+      summary: Add a new post
+      requestBody:
+        description: Data needed to create the post entity
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+        required: true
+      responses:
+        '201':
+          description: Created a post
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DocumentId'
+                  - $ref: '#/components/schemas/Post'
+                  - type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          type: string
+                          example: "1b0b31bc-bac0-4d7e-81bb-7cbf67b80fe8"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+        - accountAuth: []
+    get:
+      summary: Fetch all posts by all users
+      responses:
+        '200':
+          description: Successfully fetched all posts
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - totalItems
+                  - posts
+                  - totalPages
+                  - currentPage
+                properties:
+                  totalItems:
+                    type: integer
+                    example: 1
+                  posts:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/DocumentId'
+                        - $ref: '#/components/schemas/Post'
+                        - type: object
+                          properties:
+                            comments:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: '#/components/schemas/DocumentId'
+                                  - $ref: '#/components/schemas/Comment'
+                  totalPages:
+                    type: integer
+                    example: 1
+                  currentPage:
+                    type: integer
+                    example: 1
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal Server Error. Something might have gone wrong with fetching the posts from the MongoDB cluster.
+      security:
+        - accountAuth: []
+  /comments:
+    post:
+      summary: Add a new comment on a post
+      parameters:
+        - name: Post-Id
+          in: header
+          description: Post Id of post on which comment is being made
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Data needed to create the comment entity
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Created a comment
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DocumentId'
+                  - $ref: '#/components/schemas/PostId'
+                  - $ref: '#/components/schemas/Comment'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '400':
+          description: Bad request. Possibly malformed or missing Post-Id header.
+        '404':
+          description: Missing document for Post entity. Cannot create Comment entity on a non-existent Post entity.
+      security:
+        - accountAuth: []
+components:
+  securitySchemes:
+    accountAuth:
+      type: apiKey
+      in: header
+      name: X-Account-Id
+      description: Header to secure endpoints. A valid accountId needs to be passed in.
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    DocumentId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '5363e62d-57ef-424c-8538-527388854b0e'
+    PostId:
+      properties:
+        postId:
+          type: string
+          format: uuid
+    Account:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Joshua'
+    Comment:
+      type: object
+      properties:
+        content:
+          type: string
+        creator:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    Post:
+      type: object
+      properties:
+        caption:
+          type: string
+        image:
+          type: string
+        creator:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
