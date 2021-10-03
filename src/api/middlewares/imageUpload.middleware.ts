@@ -8,7 +8,7 @@ const diskStorage = multer.diskStorage({
         cb(null, SERVER.storagePath);
     },
     filename: function(_req: Request, file: Express.Multer.File, cb) {
-        const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
+        const uniqueSuffix = '-' + Date.now() + '.jpg';
         cb(null, file.fieldname + uniqueSuffix);
     }
 });

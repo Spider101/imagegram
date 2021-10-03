@@ -3,6 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { Comment } from './comment.model';
 import { PostDocument } from '../../interfaces';
+import { removeImage } from '../../helpers';
 
 const PostSchema = new mongoose.Schema({
     caption: { type: String, required: true },
@@ -15,9 +16,10 @@ const PostSchema = new mongoose.Schema({
 PostSchema.plugin(mongoosePaginate);
 
 PostSchema.pre<Query<PostDocument, PostDocument>>('deleteMany', async function() {
-    const doc = await this.model.findOne(this.getFilter());
+    const post = await this.model.findOne(this.getFilter());
 
-    await Comment.deleteMany({ _id: { $in: doc.comments }});
+    await Comment.deleteMany({ _id: { $in: post.comments }});
+    await removeImage(post.image);
 });
 
 export const Post = mongoose.model<PostDocument>("Post", PostSchema);
