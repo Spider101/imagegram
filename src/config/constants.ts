@@ -14,9 +14,10 @@ export const SERVER = {
 
 const DB_PASSWORD = process.env.MONGODB_PASSWORD as string;
 const DB_NAME = process.env.MONGODB_DBNAME as string;
+const REMOTE_DB_URI = `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority` as string;
 
 export const DB = {
-    uri: `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
+    uri: process.env.LOCAL_MONGO_URL || REMOTE_DB_URI as string
 };
 
 export const HEADERS = {
