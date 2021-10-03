@@ -28,7 +28,7 @@ export async function fetchAllPosts(page: string, size: string): Promise<Paginat
         },
         offset,
         limit,
-        lean: true
+        sort: { numComments: -1 }
     };
 
     try {

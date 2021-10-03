@@ -12,7 +12,10 @@ export const CommentSchema = new mongoose.Schema({
 CommentSchema.post('save', async function(doc: CommentDocument) {
     await Post.findOneAndUpdate(
         { _id: doc.postId },
-        { $push: { comments: doc._id } }
+        {
+            $push: { comments: doc._id },
+            $inc: { numComments: 1 }
+        }
     );
 });
 

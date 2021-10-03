@@ -7,7 +7,8 @@ const PostSchema = new mongoose.Schema({
     caption: { type: String, required: true },
     creator: { type: String, required: true },
     image: { type: String, required: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    numComments: Number
 }, { timestamps: true });
 
 PostSchema.plugin(mongoosePaginate);
