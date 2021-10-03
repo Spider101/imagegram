@@ -24,6 +24,19 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/DocumentId'
                 - $ref: '#/components/schemas/Account'
+  /account/{accountId}:
+    delete:
+      summary: Delete all data related to user's account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Successfully deleted user's account with all associated data
   /post:
     post:
       summary: Add a new post

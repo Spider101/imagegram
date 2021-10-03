@@ -1,4 +1,4 @@
-import { CommentDocument } from './../../interfaces/comment.interface';
+import { CommentDocument } from '../../interfaces';
 import mongoose from 'mongoose';
 
 export const CommentSchema = new mongoose.Schema({
