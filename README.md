@@ -6,7 +6,13 @@ This is a simple application exposing a REST API to manage posts made by users w
 
 ## Prerequisites
 
-You must have Docker installed on your computer. You can follow these [instructions](https://www.docker.com/products/docker-desktop) to have it quickly installed.
+You must have Docker installed on your computer. You can follow these [instructions](https://www.docker.com/products/docker-desktop) to have it quickly installed. You must also have a `.env` created at the root of the repository. Please add the following environment variables to this file:
+
+```console
+ENV=development
+
+PATH_TO_UPLOADS=<relative path to folder for storing uploaded images>
+```
 
 ## Getting Started
 
@@ -30,3 +36,5 @@ Thereafter, you can interact with the application on the following endpoints:
 * POST `/comments` to add new comments on posts
 
 You can find more information on how to build the respective cURL calls by following the OpenAPI spec found [here](src/api/openapi.yaml)
+
+To stop the application, simply hit `Cmd/Ctrl + C` to kill the containers.
