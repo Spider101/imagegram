@@ -5,6 +5,7 @@
   "author": "Abhimanyu Banerjee <banerjee.abhimanyu3@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "lint": "./node_modules/.bin/eslint --ext ts src",
     "dev": "nodemon --config nodemon.json src/api/index.ts"
   },
   "devDependencies": {
