@@ -1,6 +1,6 @@
-import { LOG } from './../../config/logger';
-import { DB } from "../../config";
 import mongoose from 'mongoose';
+
+import { LOG, DB } from '../../config';
 
 export default function() {
     const dbURI = DB.uri as string;
