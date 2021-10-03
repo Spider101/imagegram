@@ -59,6 +59,13 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/DocumentId'
                   - $ref: '#/components/schemas/Post'
+                  - type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          type: string
+                          example: "1b0b31bc-bac0-4d7e-81bb-7cbf67b80fe8"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
       security:
