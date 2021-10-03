@@ -12,11 +12,9 @@ export const SERVER = {
     storagePath: SERVER_STORAGE_PATH
 };
 
-const DB_PASSWORD = process.env.MONGODB_PASSWORD as string;
-const DB_NAME = process.env.MONGODB_DBNAME as string;
-
+// REMOTE_DB_URI would look like `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 export const DB = {
-    uri: `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
+    uri: process.env.REMOTE_DB_URI || 'mongodb://mongodb:27017/test' as string
 };
 
 export const HEADERS = {
