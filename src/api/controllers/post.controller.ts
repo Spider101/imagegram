@@ -8,7 +8,8 @@ export async function createPostHandler(req: Request, res: Response) {
 
     if (req.file) {
         const createdPost = await createPost({
-            ...req.body,
+            caption: req.body.caption,
+            // @ts-ignore
             creator: accountId
         }, req.file);
 
