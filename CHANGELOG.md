@@ -3,6 +3,11 @@ All notable changes in this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) and this project adheres to [Semantic Version](http://semver.org/spec/v2.0.0.html)
 
+## 1.10.0
+### Added
+- Changelog file to track changes across versions
+- Github action to automatically tag commits on merging PRs
+
 ## 1.9.0
 ### Added
 - _DockerFile_ and _docker-compose.yml_ to dockerize the application
