@@ -8,9 +8,10 @@ import { getPostService } from '../services';
 import { getPostController } from '../controllers';
 
 import { PostController, PostDocument, PostService } from '../interfaces/post';
-import { requireAccountHeader, uploadImage } from '../middlewares';
+import { uploadImage } from '../middlewares';
+import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 
-export function getPostRouter(connection: Connection): Router {
+export function getPostRouter(connection: Connection, accountHeaderMiddleware: AccountHeaderMiddleware): Router {
     const postRouter: Router = express.Router();
 
     const postSchema: Schema = buildSchema(connection);
@@ -18,8 +19,12 @@ export function getPostRouter(connection: Connection): Router {
     const postService: PostService = getPostService(postModel);
     const postController: PostController = getPostController(postService);
 
-    postRouter.get('/', requireAccountHeader, postController.fetchAllPostsHandler);
-    postRouter.post('/', [uploadImage(), requireAccountHeader], postController.createPostHandler);
+    postRouter.get('/', accountHeaderMiddleware.requireAccountHeader, postController.fetchAllPostsHandler);
+    postRouter.post(
+        '/',
+        [accountHeaderMiddleware.requireAccountHeader, uploadImage()],
+        postController.createPostHandler
+    );
 
     return postRouter;
 }
