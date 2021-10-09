@@ -1,18 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
-import { LOG, DB } from '../../config';
+import { LOG } from '../../config';
 
-export default function(): Promise<void> {
-    const dbURI = DB.uri as string;
+export default function getDbConnection(connectionString: string): Connection {
+    mongoose.set('useCreateIndex', true);
 
-    return mongoose.connect(dbURI, {
+    LOG.info('Connecting to MongoDB database...');
+    LOG.debug(`Connection string used: ${connectionString}`);
+    return mongoose.createConnection(connectionString, {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    })
-    .then(() => LOG.info('Connected to MongoDB database...'))
-    .catch((err) => {
-        LOG.error('Unable to connect to MongoDB database. Shutting down...');
-        LOG.error('DB error:', err);
-        process.exit(1);
-    })
-}
+    });
+};
