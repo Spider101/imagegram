@@ -11,4 +11,4 @@ export default function getDbConnection(connectionString: string): Connection {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
-};
+}

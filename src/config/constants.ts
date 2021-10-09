@@ -14,12 +14,12 @@ export const SERVER = {
 
 // REMOTE_DB_URI would look like `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 export const DB = {
-    uri: process.env.REMOTE_DB_URI || 'mongodb://mongodb:27017/test' as string
+    uri: process.env.REMOTE_DB_URI || 'mongodb://localhost:27017/test' as string
 };
 
 export const HEADERS = {
     accountId: 'X-Account-Id',
-    postId: 'Post-Id',
+    postId: 'X-Post-Id',
     authResponseKey: 'WWW-authenticate'
 };
 
