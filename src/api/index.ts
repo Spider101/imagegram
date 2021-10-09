@@ -1,32 +1,11 @@
-import express, { Request, Response } from 'express';
+import getDbConnection from './database/connect';
 
-import { LOG, SERVER } from '../config';
-import connect from './database/connect';
-import { HealthCheck } from './interfaces';
-import { setupRoutes } from './routes';
+import buildApplication from './app';
+import { DB, LOG, SERVER } from '../config';
 
-const app = express();
-
-app.use(express.json());
-
-app.get('/healthcheck', (_req: Request, res: Response) => {
-    LOG.info('Checking if service is healthy...');
-
-    const healthcheck: HealthCheck = {
-        uptime: process.uptime(),
-        message: 'OK',
-        timestamp: Date.now()
-    };
-
-    res.send(healthcheck);
-});
+const connection = getDbConnection(DB.uri);
+const app = buildApplication(connection);
 
 app.listen(SERVER.port, () => {
     LOG.info(`Listening on port: ${SERVER.port}`);
-
-    // connect to the database
-    connect();
-
-    // setup the routes
-    setupRoutes(app);
 });
