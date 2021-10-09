@@ -1,9 +1,24 @@
-import express from 'express';
-import { createCommentHandler } from '../controllers';
+import express, { Router } from 'express';
+import { Connection, Model, Schema } from 'mongoose';
+
+import getModel from '../database/modelFactory';
+import buildSchema from '../database/schemas/comment.schema';
+
+import { getCommentController } from '../controllers';
+import { getCommentService } from '../services';
+
+import { CommentController, CommentDocument, CommentService } from '../interfaces/comment';
 import { requireAccountHeader, requirePostIdHeader } from '../middlewares';
 
-const commentRouter = express.Router();
+export function getCommentRouter(connection: Connection): Router {
+    const commentRouter: Router = express.Router();
 
-commentRouter.post('/', [requireAccountHeader, requirePostIdHeader], createCommentHandler);
+    const commentSchema: Schema = buildSchema(connection);
+    const commentModel: Model<CommentDocument> = getModel<CommentDocument>(connection, 'Comment', commentSchema);
+    const commentService: CommentService = getCommentService(commentModel);
+    const commentController: CommentController = getCommentController(commentService);
 
-export default commentRouter;
+    commentRouter.post('/', [requireAccountHeader, requirePostIdHeader], commentController.createCommentHandler);
+
+    return commentRouter;
+}

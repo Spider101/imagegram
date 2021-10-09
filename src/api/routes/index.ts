@@ -1,11 +1,12 @@
+import { Connection } from 'mongoose';
 import { Express } from 'express';
 
-import accountRouter from './account.routes';
-import commentRouter from './comment.routes';
-import postRouter from './post.routes';
+import { getAccountRouter } from './account.routes';
+import { getCommentRouter } from './comment.routes';
+import { getPostRouter } from './post.routes';
 
-export function setupRoutes(app: Express): void {
-    app.use('/accounts', accountRouter);
-    app.use('/posts', postRouter);
-    app.use('/comments', commentRouter);
+export function setupRoutes(app: Express, connection: Connection): void {
+    app.use('/accounts', getAccountRouter(connection));
+    app.use('/posts', getPostRouter(connection));
+    app.use('/comments', getCommentRouter(connection));
 }
