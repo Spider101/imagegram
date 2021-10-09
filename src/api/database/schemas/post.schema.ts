@@ -1,6 +1,7 @@
 import mongoose, { Connection, Query, Schema } from 'mongoose';
+
 import { removeImage } from '../../helpers';
-import { PostDocument } from '../../interfaces';
+import { PostDocument } from '../../interfaces/post';
 
 export default function buildSchema(connection: Connection): Schema {
     const PostSchema = new mongoose.Schema(

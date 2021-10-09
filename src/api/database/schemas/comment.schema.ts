@@ -1,6 +1,6 @@
 import mongoose, { Connection, Schema } from 'mongoose';
 
-import { CommentDocument } from '../../interfaces';
+import { CommentDocument } from '../../interfaces/comment';
 
 export default function buildSchema(connection: Connection): Schema {
     const CommentSchema = new mongoose.Schema(
