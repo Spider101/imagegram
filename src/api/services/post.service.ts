@@ -1,47 +1,40 @@
-import { PaginateResult } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 
-import { Post } from '../database/models';
 import { getImageStoragePath, getPagination } from '../helpers';
-import { PostDocument } from '../interfaces';
+import { PostDocument, PostService } from '../interfaces/post';
 
-export async function createPost({
-    caption,
-    creator
-}: {
-    caption: PostDocument['caption'],
-    creator: PostDocument['creator'],
-}, file: Express.Multer.File): Promise<PostDocument> {
-    return await Post.create({
-        caption,
-        creator,
-        image: getImageStoragePath(file)
-    });
-}
+export function getPostService(postModel: PaginateModel<PostDocument>): PostService {
+    return {
+        createPost: async ({ caption, creator }, file) =>
+            await postModel.create({ caption, creator, image: getImageStoragePath(file) }),
+        fetchAllPosts: async (page, size) => {
+            const condition = {};
+            const { offset, limit } = getPagination(size, page);
 
-export async function fetchAllPosts(page: string, size: string): Promise<PaginateResult<PostDocument>> {
-    const condition = {};
-    const { offset, limit } = getPagination(size, page);
+            const options = {
+                populate: {
+                    path: 'comments',
+                    options: {
+                        sort: { createdAt: -1 },
+                        perDocumentLimit: 2
+                    }
+                },
+                offset,
+                limit,
+                sort: { numComments: -1 }
+            };
 
-    const options = {
-        populate: {
-            path: 'comments',
-            options: {
-                sort: { createdAt: -1 },
-                perDocumentLimit: 2
+            try {
+                return postModel.paginate(condition, options);
+            } catch (error: unknown) {
+                const errorMessage =
+                    error instanceof Error
+                        ? error.message
+                        : typeof error === 'string'
+                        ? error.toUpperCase()
+                        : 'Something went wrong while fetching all posts!';
+                throw new Error(errorMessage);
             }
-        },
-        offset,
-        limit,
-        sort: { numComments: -1 }
+        }
     };
-
-    try {
-        return await Post.paginate(condition, options);
-    } catch(error: unknown) {
-        const errorMessage = error instanceof Error
-            ? error.message
-            : typeof error === 'string'
-                ? error.toUpperCase() : 'Something went wrong while fetching all posts!';
-        throw new Error(errorMessage);
-    }
 }

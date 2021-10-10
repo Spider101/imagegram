@@ -1,13 +1,10 @@
-import { Query } from 'mongoose';
-import { DocumentDefinition } from 'mongoose';
+import { Model } from 'mongoose';
 
-import { Account } from '../database/models';
-import { AccountDocument } from '../interfaces';
+import { AccountDocument, AccountService } from '../interfaces/account';
 
-export async function createAccount(account: DocumentDefinition<AccountDocument>): Promise<AccountDocument> {
-    return await Account.create(account);
-}
-
-export async function deleteAccount(accountId: string): Promise<Query<AccountDocument, AccountDocument>> {
-    return await Account.findById(accountId).deleteOne();
+export function getAccountService(accountModel: Model<AccountDocument>): AccountService {
+    return {
+        createAccount: async account => await accountModel.create(account),
+        deleteAccount: async accountId => await accountModel.findById(accountId).deleteOne()
+    };
 }
