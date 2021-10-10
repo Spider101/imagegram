@@ -32,7 +32,9 @@ curl --location --request GET 'localhost:3001/healthcheck'
 Thereafter, you can interact with the application on the following endpoints:
 
 * POST `/accounts` to create new accounts
+* DELETE `/accounts/:accountId` to delete an account and all post and comment data associated with it
 * POST `/posts` to create new posts
+* GET `/posts` to fetch all posts in the application
 * POST `/comments` to add new comments on posts
 
 You can find more information on how to build the respective cURL calls by following the OpenAPI spec found [here](src/api/openapi.yaml)
