@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { Connection, Model, Schema } from 'mongoose';
+import { Connection, PaginateModel, Schema } from 'mongoose';
 
 import getModel from '../database/modelFactory';
 import buildSchema from '../database/schemas/post.schema';
@@ -15,7 +15,11 @@ export function getPostRouter(connection: Connection, accountHeaderMiddleware: A
     const postRouter: Router = express.Router();
 
     const postSchema: Schema = buildSchema(connection);
-    const postModel: Model<PostDocument> = getModel<PostDocument>(connection, 'Post', postSchema);
+    const postModel: PaginateModel<PostDocument> = getModel<PostDocument>(
+        connection,
+        'Post',
+        postSchema
+    ) as PaginateModel<PostDocument>;
     const postService: PostService = getPostService(postModel);
     const postController: PostController = getPostController(postService);
 

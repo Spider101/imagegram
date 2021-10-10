@@ -1,3 +1,4 @@
+import mongoosePaginate from 'mongoose-paginate-v2';
 import mongoose, { Connection, Query, Schema } from 'mongoose';
 
 import { removeImage } from '../../helpers';
@@ -14,6 +15,9 @@ export default function buildSchema(connection: Connection): Schema {
         },
         { timestamps: true }
     );
+
+    // register plugin
+    PostSchema.plugin(mongoosePaginate);
 
     // register middleware
     PostSchema.pre<Query<PostDocument, PostDocument>>('deleteMany', async function () {

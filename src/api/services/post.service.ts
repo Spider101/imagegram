@@ -1,10 +1,9 @@
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 
-import { Post } from '../database/models';
 import { getImageStoragePath, getPagination } from '../helpers';
 import { PostDocument, PostService } from '../interfaces/post';
 
-export function getPostService(postModel: Model<PostDocument>): PostService {
+export function getPostService(postModel: PaginateModel<PostDocument>): PostService {
     return {
         createPost: async ({ caption, creator }, file) =>
             await postModel.create({ caption, creator, image: getImageStoragePath(file) }),
@@ -26,7 +25,7 @@ export function getPostService(postModel: Model<PostDocument>): PostService {
             };
 
             try {
-                return await Post.paginate(condition, options);
+                return postModel.paginate(condition, options);
             } catch (error: unknown) {
                 const errorMessage =
                     error instanceof Error
