@@ -5,6 +5,9 @@ yarn-error.log
 # storage
 public/uploads/*
 
+# testing
+/coverage
+
 # misc
 .vscode
 .env
