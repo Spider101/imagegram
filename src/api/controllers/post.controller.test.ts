@@ -15,6 +15,7 @@ beforeEach(() => {
 });
 
 describe('Post creation -', () => {
+    // TODO: move the fake request and response object creation logic to a common helper module
     const fakeRequest = {
         body: { caption: 'fake caption' },
         header: _name => 'fake account Id'
