@@ -20,6 +20,7 @@ test('account is created', async () => {
     const fakeResponse = {
         send: jest.fn() as Send
     } as Response;
+    fakeResponse.status = jest.fn(() => fakeResponse);
     mockAccountService.createAccount.mockImplementation(({ name }) => Promise.resolve({ ...expectedResponse, name }));
 
     // execute
