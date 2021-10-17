@@ -1,8 +1,8 @@
 import { Connection } from 'mongoose';
 import request from 'supertest';
 import { DB } from '../config';
-import buildApplication from './app';
-import getDbConnection from './database/connect';
+import buildApplication from '../api/app';
+import getDbConnection from '../api/database/connect';
 
 const connection: Connection = getDbConnection(DB.uri);
 
