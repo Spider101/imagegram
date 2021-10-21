@@ -52,12 +52,12 @@ describe('Accounts endpoints - ', () => {
         name: TEST_ACCOUNT_NAME
     };
 
-    let createAccountRequest: SuperAgentRequest;
-    beforeEach(() => {
-        createAccountRequest = request(app).post('/accounts');
-    });
-
     describe('Create account endpoint', () => {
+        let createAccountRequest: SuperAgentRequest;
+        beforeEach(() => {
+            createAccountRequest = request(app).post('/accounts');
+        });
+
         test('returns 201 Created response', async () => {
             const response = await createAccountRequest.send(payload);
             expect(response.statusCode).toBe(201);
@@ -76,12 +76,12 @@ describe('Posts endpoints - ', () => {
         accountId = await mongoTestDAO.getAccountIdFromDb(TEST_ACCOUNT_NAME);
     });
 
-    let createPostRequest: SuperAgentRequest;
-    beforeEach(() => {
-        createPostRequest = request(app).post('/posts');
-    });
-
     describe('Create posts endpoint', () => {
+        let createPostRequest: SuperAgentRequest;
+        beforeEach(() => {
+            createPostRequest = request(app).post('/posts');
+        });
+
         afterEach(() => {
             deleteFilesInDirectory(SERVER.storagePath);
         });
@@ -145,12 +145,12 @@ describe('Comments endpoints -', () => {
         postId = await mongoTestDAO.getPostIdFromDb(accountId);
     });
 
-    let createCommentRequest: SuperAgentRequest;
-    beforeEach(() => {
-        createCommentRequest = request(app).post('/comments');
-    });
-
     describe('Create comments endpoint', function () {
+        let createCommentRequest: SuperAgentRequest;
+        beforeEach(() => {
+            createCommentRequest = request(app).post('/comments');
+        });
+
         test('returns 401 Unauthorized response when account id is not present in headers', async () => {
             const response = await createCommentRequest.send(payload);
 
