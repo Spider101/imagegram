@@ -18,6 +18,7 @@ test('comment is created', async () => {
     const fakeResponse = {
         send: jest.fn() as Send
     } as Response;
+    fakeResponse.status = jest.fn().mockReturnValue(fakeResponse);
     mockCommentService.createComment.mockImplementation(({ content, creator, postId }) =>
         Promise.resolve({ content, creator, postId })
     );

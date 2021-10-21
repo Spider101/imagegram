@@ -15,7 +15,7 @@ export function getCommentController(commentService: CommentService): CommentCon
             });
             LOG.info(`User with accountId: ${accountId} created comment on post with ID: ${postId}`);
 
-            return res.send(createdComment);
+            return res.status(201).send(createdComment);
         }
     };
 }
