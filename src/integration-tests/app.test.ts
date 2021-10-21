@@ -131,6 +131,62 @@ describe('Posts endpoints - ', () => {
             expect(response.body.creator).toEqual(accountId.toString());
         });
     });
+
+    describe('Fetch all posts endpoint', () => {
+        let fetchAllPostsRequest: SuperAgentRequest;
+        beforeEach(() => {
+            fetchAllPostsRequest = request(app).get('/posts');
+        });
+
+        test('returns 401 Unauthorized response when account id is not present in headers', async () => {
+            const response = await fetchAllPostsRequest;
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 200 OK response', async () => {
+            const response = await fetchAllPostsRequest.set(HEADERS.accountId, accountId);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    totalItems: expect.any(Number),
+                    totalPages: expect.any(Number),
+                    currentPage: expect.any(Number)
+                })
+            );
+            const posts = response.body.posts;
+            expect(posts).not.toBeNull();
+            expect(posts.length).toBeGreaterThan(0);
+            posts.forEach((post: unknown) => {
+                expect(post).toEqual(
+                    expect.objectContaining({
+                        _id: expect.any(String),
+                        caption: expect.any(String),
+                        image: expect.any(String),
+                        creator: expect.any(String)
+                    })
+                );
+
+                // if the assertion above passed, then we can safely type assert post to an object
+                const comments = (post as Record<string, unknown>).comments;
+                expect(comments).not.toBeNull();
+
+                if (Array.isArray(comments) && comments.length > 0) {
+                    comments.forEach(comment => {
+                        expect(comment).toEqual(
+                            expect.objectContaining({
+                                _id: expect.any(String),
+                                content: expect.any(String),
+                                creator: expect.any(String)
+                            })
+                        );
+                    });
+                }
+            });
+        });
+    });
 });
 
 describe('Comments endpoints -', () => {
