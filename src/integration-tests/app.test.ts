@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { Connection } from 'mongoose';
 import MongoMemoryServer from 'mongodb-memory-server-core';
 import request from 'supertest';
+import { SuperAgentRequest } from 'superagent';
 import path from 'path';
 
 import buildApplication from '../api/app';
@@ -47,19 +48,23 @@ describe('Healtcheck endpoint', () => {
 });
 
 describe('Accounts endpoints - ', () => {
-    const fakeAccountName = TEST_ACCOUNT_NAME;
+    const payload = {
+        name: TEST_ACCOUNT_NAME
+    };
+
+    let createAccountRequest: SuperAgentRequest;
+    beforeEach(() => {
+        createAccountRequest = request(app).post('/accounts');
+    });
+
     describe('Create account endpoint', () => {
         test('returns 201 Created response', async () => {
-            const response = await request(app).post('/accounts').send({
-                name: fakeAccountName
-            });
+            const response = await createAccountRequest.send(payload);
             expect(response.statusCode).toBe(201);
         });
 
         test('returns response with _id field corresponding to newly created account', async () => {
-            const response = await request(app).post('/accounts').send({
-                name: fakeAccountName
-            });
+            const response = await createAccountRequest.send(payload);
             expect(response.body._id).toBeDefined();
         });
     });
@@ -71,14 +76,18 @@ describe('Posts endpoints - ', () => {
         accountId = await mongoTestDAO.getAccountIdFromDb(TEST_ACCOUNT_NAME);
     });
 
+    let createPostRequest: SuperAgentRequest;
+    beforeEach(() => {
+        createPostRequest = request(app).post('/posts');
+    });
+
     describe('Create posts endpoint', () => {
         afterEach(() => {
             deleteFilesInDirectory(SERVER.storagePath);
         });
 
         test('returns 401 Unauthorized response when account id is not present in headers', async () => {
-            const response = await request(app)
-                .post('/posts')
+            const response = await createPostRequest
                 .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
                 .field('caption', 'fake post caption');
 
@@ -87,8 +96,7 @@ describe('Posts endpoints - ', () => {
         });
 
         test('returns 422 Unprocessable response when file is not in correct format', async () => {
-            const response = await request(app)
-                .post('/posts')
+            const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
                 .attach('image', path.join(__dirname, 'resources', 'test-not-image-file.txt'))
                 .field('caption', 'fake post caption');
@@ -98,8 +106,7 @@ describe('Posts endpoints - ', () => {
         });
 
         test('returns 201 Created response', async () => {
-            const response = await request(app)
-                .post('/posts')
+            const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
                 .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
                 .field('caption', 'fake post caption');
@@ -107,8 +114,7 @@ describe('Posts endpoints - ', () => {
         });
 
         test('returns response with _id and image fields for newly created post', async () => {
-            const response = await request(app)
-                .post('/posts')
+            const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
                 .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
                 .field('caption', 'fake post caption');
@@ -128,37 +134,39 @@ describe('Posts endpoints - ', () => {
 });
 
 describe('Comments endpoints -', () => {
-    // const createCommentRequest: request.Request = request(app).post('/comments');
     const payload = {
         content: 'fake content for comment on post'
     };
 
     let accountId: string;
     let postId: string;
-
     beforeAll(async () => {
         accountId = await mongoTestDAO.getAccountIdFromDb(TEST_ACCOUNT_NAME);
         postId = await mongoTestDAO.getPostIdFromDb(accountId);
     });
 
+    let createCommentRequest: SuperAgentRequest;
+    beforeEach(() => {
+        createCommentRequest = request(app).post('/comments');
+    });
+
     describe('Create comments endpoint', function () {
         test('returns 401 Unauthorized response when account id is not present in headers', async () => {
-            const response = await request(app).post('/comments').send(payload);
+            const response = await createCommentRequest.send(payload);
 
             expect(response.statusCode).toBe(401);
             expect(response.body.message).toBeDefined();
         });
 
         test('returns 400 Bad Request response when post id is not present in headers', async () => {
-            const response = await request(app).post('/comments').set(HEADERS.accountId, accountId).send(payload);
+            const response = await createCommentRequest.set(HEADERS.accountId, accountId).send(payload);
 
             expect(response.statusCode).toBe(400);
             expect(response.body.message).toBeDefined();
         });
 
         test('returns 201 Created when new comment is created', async () => {
-            const response = await request(app)
-                .post('/comments')
+            const response = await createCommentRequest
                 .set(HEADERS.accountId, accountId)
                 .set(HEADERS.postId, postId)
                 .send(payload);
@@ -167,12 +175,20 @@ describe('Comments endpoints -', () => {
         });
 
         test('returns parent postId in response when new comment is created', async () => {
-            const response = await request(app)
-                .post('/comments')
+            const response = await createCommentRequest
                 .set(HEADERS.accountId, accountId)
                 .set(HEADERS.postId, postId)
                 .send(payload);
 
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    postId: expect.any(String),
+                    content: expect.any(String),
+                    creator: expect.any(String)
+                })
+            );
+            expect(response.body.creator).toEqual(accountId.toString());
             expect(response.body.postId).toEqual(postId.toString());
         });
     });
