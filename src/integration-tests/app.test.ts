@@ -65,6 +65,68 @@ describe('Accounts endpoints - ', () => {
     });
 });
 
+describe('Posts endpoints - ', () => {
+    let accountId: string;
+    beforeAll(async () => {
+        accountId = await mongoTestDAO.getAccountIdFromDb(TEST_ACCOUNT_NAME);
+    });
+
+    describe('Create posts endpoint', () => {
+        afterEach(() => {
+            deleteFilesInDirectory(SERVER.storagePath);
+        });
+
+        test('returns 401 Unauthorized response when account id is not present in headers', async () => {
+            const response = await request(app)
+                .post('/posts')
+                .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
+                .field('caption', 'fake post caption');
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 422 Unprocessable response when file is not in correct format', async () => {
+            const response = await request(app)
+                .post('/posts')
+                .set(HEADERS.accountId, accountId)
+                .attach('image', path.join(__dirname, 'resources', 'test-not-image-file.txt'))
+                .field('caption', 'fake post caption');
+
+            expect(response.statusCode).toBe(422);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 201 Created response', async () => {
+            const response = await request(app)
+                .post('/posts')
+                .set(HEADERS.accountId, accountId)
+                .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
+                .field('caption', 'fake post caption');
+            expect(response.statusCode).toBe(201);
+        });
+
+        test('returns response with _id and image fields for newly created post', async () => {
+            const response = await request(app)
+                .post('/posts')
+                .set(HEADERS.accountId, accountId)
+                .attach('image', path.join(__dirname, 'resources', 'test-jpeg-image.jpg'))
+                .field('caption', 'fake post caption');
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    caption: expect.any(String),
+                    creator: expect.any(String),
+                    image: expect.any(String)
+                })
+            );
+
+            expect(response.body.creator).toEqual(accountId.toString());
+        });
+    });
+});
+
 afterAll(async () => {
     // close the db connection after all tests finish running
     if (connection) {
