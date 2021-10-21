@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint --ext ts src",
     "dev": "nodemon --config nodemon.json src/api/index.ts",
-    "test:watch": "jest --watch src/api"
+    "test:watch": "jest --watch src/api",
+    "test-integration": "NODE_ENV=test jest src/integration-tests"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
