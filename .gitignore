@@ -4,10 +4,11 @@ yarn-error.log
 
 # storage
 public/uploads/*
+src/integration-tests/image-storage
 
 # testing
 /coverage
 
 # misc
 .vscode
-.env
+.env*
