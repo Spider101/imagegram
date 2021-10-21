@@ -21,15 +21,18 @@ describe('Post creation -', () => {
         header: _name => 'fake account Id'
     } as Request;
 
+    const fakeResponse = {
+        send: jest.fn() as Send
+    } as Response;
+    fakeResponse.status = jest.fn().mockReturnValue(fakeResponse);
+    fakeResponse.json = jest.fn().mockReturnValue(fakeResponse);
+
     test('post is created with valid file data', async () => {
         // setup
         const fakeRequestWithFileData = {
             ...fakeRequest,
             file: { filename: 'fake image key' } as Express.Multer.File
         } as Request;
-        const fakeResponse = {
-            send: jest.fn() as Send
-        } as Response;
         mockPostService.createPost.mockImplementation(({ caption, creator }, file) =>
             Promise.resolve({ caption, creator, image: file.filename })
         );
@@ -48,11 +51,6 @@ describe('Post creation -', () => {
     });
 
     test('post is not created when file data is not valid', async () => {
-        // setup
-        const fakeResponse = {} as Response;
-        fakeResponse.status = jest.fn().mockReturnValue(fakeResponse);
-        fakeResponse.json = jest.fn().mockReturnValue(fakeResponse);
-
         // execute
         await postController.createPostHandler(fakeRequest, fakeResponse);
 
