@@ -127,6 +127,57 @@ describe('Posts endpoints - ', () => {
     });
 });
 
+describe('Comments endpoints -', () => {
+    // const createCommentRequest: request.Request = request(app).post('/comments');
+    const payload = {
+        content: 'fake content for comment on post'
+    };
+
+    let accountId: string;
+    let postId: string;
+
+    beforeAll(async () => {
+        accountId = await mongoTestDAO.getAccountIdFromDb(TEST_ACCOUNT_NAME);
+        postId = await mongoTestDAO.getPostIdFromDb(accountId);
+    });
+
+    describe('Create comments endpoint', function () {
+        test('returns 401 Unauthorized response when account id is not present in headers', async () => {
+            const response = await request(app).post('/comments').send(payload);
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 400 Bad Request response when post id is not present in headers', async () => {
+            const response = await request(app).post('/comments').set(HEADERS.accountId, accountId).send(payload);
+
+            expect(response.statusCode).toBe(400);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 201 Created when new comment is created', async () => {
+            const response = await request(app)
+                .post('/comments')
+                .set(HEADERS.accountId, accountId)
+                .set(HEADERS.postId, postId)
+                .send(payload);
+
+            expect(response.statusCode).toBe(201);
+        });
+
+        test('returns parent postId in response when new comment is created', async () => {
+            const response = await request(app)
+                .post('/comments')
+                .set(HEADERS.accountId, accountId)
+                .set(HEADERS.postId, postId)
+                .send(payload);
+
+            expect(response.body.postId).toEqual(postId.toString());
+        });
+    });
+});
+
 afterAll(async () => {
     // close the db connection after all tests finish running
     if (connection) {
