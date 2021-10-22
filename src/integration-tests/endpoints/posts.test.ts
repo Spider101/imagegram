@@ -12,6 +12,8 @@ const TEST_ACCOUNT_NAME = 'fake account name';
 
 describe('Posts endpoints -', () => {
     const pathToResourcesDir: string = path.join(__dirname, '..', 'resources');
+    const txtFname = 'test-text-file.txt';
+    const jpegFname = 'test-jpeg-image.jpg';
 
     let accountId: string;
     let app: Express;
@@ -27,9 +29,8 @@ describe('Posts endpoints -', () => {
         });
 
         test('returns 401 Unauthorized response when account id is not present in headers', async () => {
-            console.log(path.join(pathToResourcesDir, 'test-jpeg-image.jpg'));
             const response = await createPostRequest
-                .attach('image', path.join(pathToResourcesDir, 'test-jpeg-image.jpg'))
+                .attach('image', path.join(pathToResourcesDir, jpegFname))
                 .field('caption', 'fake post caption');
 
             expect(response.statusCode).toBe(401);
@@ -39,7 +40,7 @@ describe('Posts endpoints -', () => {
         test('returns 422 Unprocessable response when file is not in correct format', async () => {
             const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
-                .attach('image', path.join(pathToResourcesDir, 'test-not-image-file.txt'))
+                .attach('image', path.join(pathToResourcesDir, txtFname))
                 .field('caption', 'fake post caption');
 
             expect(response.statusCode).toBe(422);
@@ -49,7 +50,7 @@ describe('Posts endpoints -', () => {
         test('returns 201 Created response', async () => {
             const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
-                .attach('image', path.join(pathToResourcesDir, 'test-jpeg-image.jpg'))
+                .attach('image', path.join(pathToResourcesDir, jpegFname))
                 .field('caption', 'fake post caption');
             expect(response.statusCode).toBe(201);
         });
@@ -57,7 +58,7 @@ describe('Posts endpoints -', () => {
         test('returns response with _id and image fields for newly created post', async () => {
             const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
-                .attach('image', path.join(pathToResourcesDir, 'test-jpeg-image.jpg'))
+                .attach('image', path.join(pathToResourcesDir, jpegFname))
                 .field('caption', 'fake post caption');
 
             expect(response.body).toEqual(
