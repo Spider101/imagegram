@@ -4,6 +4,21 @@ All notable changes in this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) and this project adheres to [Semantic Version](http://semver.org/spec/v2.0.0.html)
 
+## 1.12.0
+
+### Added
+
+- Jest dependency and config to build the test harness for the application
+- Unit tests for accounts, posts, comments controllers
+- In-memory MongoDB server dependency to help run integration tests
+- Integration tests (ITs) for the accounts, posts, comments endpoints
+- Bash script to setup environment for running ITs
+- Github workflow file defining the CI/CD pipeline which includes installing packages, linting, running UTs and ITs
+
+### Changed
+
+- Node version in `.nvmrc` file to compatible with the testing dependencies
+
 ## 1.11.0
 
 ### Added

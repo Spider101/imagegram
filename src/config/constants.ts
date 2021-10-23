@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+
+dotenv.config({ path: path.resolve(__dirname, '..', '..', envFile) });
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost' as string;
 const SERVER_PORT = process.env.SERVER_PORT || 3001 as number;
@@ -24,6 +27,6 @@ export const HEADERS = {
 };
 
 export const ENV = {
-    isDevelopment: (): boolean => process.env.ENV === 'development',
+    isDevelopment: (): boolean => process.env.ENV === 'development' || process.env.ENV === 'test',
     isProduction: (): boolean => process.env.ENV === 'production'
 };

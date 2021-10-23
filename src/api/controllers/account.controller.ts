@@ -8,7 +8,7 @@ export function getAccountController(accountService: AccountService): AccountCon
             LOG.info(`Creating account for user with name: ${req.body.name}`);
 
             const createdAccount = await accountService.createAccount(req.body);
-            return res.send(createdAccount);
+            return res.status(201).send(createdAccount);
         },
         deleteAccountHandler: async (req, res) => {
             const accountId = req.params.accountId;

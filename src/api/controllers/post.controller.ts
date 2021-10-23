@@ -17,7 +17,7 @@ export function getPostController(postService: PostService): PostController {
                     req.file
                 );
 
-                return res.send(createdPost);
+                return res.status(201).send(createdPost);
             } else {
                 // only reason req.file is falsy is if the file type did not match the filter
                 return res.status(422).json({
