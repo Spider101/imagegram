@@ -4,8 +4,7 @@ import { SuperAgentRequest } from 'superagent';
 import path from 'path';
 
 import { getMongoTestDAO, MongoTestDAO } from '../db';
-import { HEADERS, SERVER } from '../../config';
-import { deleteFilesInDirectory } from '../helper';
+import { HEADERS } from '../../config';
 
 const mongoTestDAO: MongoTestDAO = getMongoTestDAO();
 const TEST_ACCOUNT_NAME = 'fake account name';
@@ -71,10 +70,6 @@ describe('Posts endpoints -', () => {
             );
 
             expect(response.body.creator).toEqual(accountId.toString());
-        });
-
-        afterEach(() => {
-            deleteFilesInDirectory(SERVER.storagePath);
         });
     });
 
