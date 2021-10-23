@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import { Types } from 'mongoose';
 import request from 'supertest';
 import { SuperAgentRequest } from 'superagent';
 
@@ -39,6 +40,16 @@ describe('Comments endpoints', () => {
             const response = await createCommentRequest.set(HEADERS.accountId, accountId).send(payload);
 
             expect(response.statusCode).toBe(400);
+            expect(response.body.message).toBeDefined();
+        });
+
+        test('returns 404 Not Found if there is no post entity matching the id passed as header', async () => {
+            const response = await createCommentRequest
+                .set(HEADERS.accountId, accountId)
+                .set(HEADERS.postId, Types.ObjectId().toJSON())
+                .send(payload);
+
+            expect(response.statusCode).toBe(404);
             expect(response.body.message).toBeDefined();
         });
 
