@@ -12,6 +12,9 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+    env:
+      ENV: test
+      PATH_TO_UPLOADS: ./src/integration-tests/image-storage
     steps:
     - uses: actions/checkout@v2
 
@@ -29,3 +32,9 @@ jobs:
 
     - name: Run Unit Tests
       run: yarn test
+
+    - name: Setup Environment for ITs
+      run: bash ./src/integration-tests/setup-integration-tests.sh
+
+    - name: Run Integration Tests
+      run: yarn test-integration
