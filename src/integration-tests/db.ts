@@ -5,6 +5,7 @@ import { Connection, Model } from 'mongoose';
 import buildApplication from '../api/app';
 import getDbConnection from '../api/database/connect';
 import { AccountDocument } from '../api/interfaces/account';
+import { CommentDocument } from '../api/interfaces/comment';
 import { PostDocument } from '../api/interfaces/post';
 import { LOG } from '../config';
 
@@ -12,6 +13,9 @@ export interface MongoTestDAO {
     init(): Promise<Express>;
     getAccountIdFromDb(accountName: string): Promise<string>;
     getPostIdFromDb(accountId: string): Promise<string>;
+    doesAccountExist(accountId: string): Promise<boolean>;
+    doesPostExist(postId: string): Promise<boolean>;
+    doesCommentExist(commentId: string): Promise<boolean>;
     shutDown(): Promise<void>;
 }
 
@@ -59,6 +63,18 @@ export function getMongoTestDAO(): MongoTestDAO {
                 return newPost._id;
             }
             return post._id;
+        },
+        doesAccountExist: async accountId => {
+            const accountModel: Model<AccountDocument> = connection.model<AccountDocument>('Account');
+            return await accountModel.exists({ _id: accountId });
+        },
+        doesPostExist: async postId => {
+            const postModel: Model<PostDocument> = connection.model<PostDocument>('Post');
+            return await postModel.exists({ _id: postId });
+        },
+        doesCommentExist: async commentId => {
+            const commentModel: Model<CommentDocument> = connection.model<CommentDocument>('Comment');
+            return await commentModel.exists({ _id: commentId });
         },
         shutDown: async () => {
             if (connection) {
