@@ -1,10 +1,9 @@
-import { Model } from 'mongoose';
+import { AccountDAO } from '../database';
+import { AccountService } from '../interfaces/account';
 
-import { AccountDocument, AccountService } from '../interfaces/account';
-
-export function getAccountService(accountModel: Model<AccountDocument>): AccountService {
+export function getAccountService(accountDAO: AccountDAO): AccountService {
     return {
-        createAccount: async account => await accountModel.create(account),
-        deleteAccount: async accountId => await accountModel.findById(accountId).deleteOne()
+        createAccount: async account => await accountDAO.createNewAccount(account),
+        deleteAccount: async accountId => await accountDAO.deleteAccountById(accountId)
     };
 }

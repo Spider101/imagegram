@@ -1,17 +1,15 @@
-import { Connection } from 'mongoose';
-
-import { AccountDocument } from '../interfaces/account';
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 import { HEADERS, LOG } from '../../config';
+import { AccountDAO } from '../database';
 
-export function getAccountHeaderMiddleware(connection: Connection): AccountHeaderMiddleware {
+export function getAccountHeaderMiddleware(accountDAO: AccountDAO): AccountHeaderMiddleware {
     return {
         requireAccountHeader: async (req, res, next) => {
             const accountId = req.header(HEADERS.accountId);
             if (accountId) {
                 LOG.info(`Trying to find document for account with ID: ${accountId}...`);
 
-                const account = await connection.model<AccountDocument>('Account').findById(accountId);
+                const account = await accountDAO.findById(accountId);
 
                 // findById returns null when document is not found
                 if (account != null) {
