@@ -4,11 +4,9 @@ import { getCommentController } from '../controllers';
 import { getCommentService } from '../services';
 
 import { AccountHeaderMiddleware, PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
-import { CommentController, CommentService } from '../interfaces/comment';
+import { CommentController, CommentService, ICommentDAO } from '../interfaces/comment';
 import { IPostDAO } from '../interfaces/post';
 import { getPostIdHeaderMiddleware } from '../middlewares';
-
-import { ICommentDAO } from '../database/dao/comment.dao';
 
 export function getCommentRouter(
     commentDAO: ICommentDAO,

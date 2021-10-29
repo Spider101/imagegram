@@ -1,5 +1,4 @@
-import { CommentService } from '../interfaces/comment';
-import { ICommentDAO } from '../database/dao/comment.dao';
+import { CommentService, ICommentDAO } from '../interfaces/comment';
 
 export function getCommentService(commentDAO: ICommentDAO): CommentService {
     return {

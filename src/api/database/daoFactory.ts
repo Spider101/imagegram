@@ -1,9 +1,11 @@
 import { Connection } from 'mongoose';
 
 import { IAccountDAO } from '../interfaces/account';
+import { ICommentDAO } from '../interfaces/comment';
 import { IPostDAO } from '../interfaces/post';
+
 import { getAccountDAO, getPostDAO } from './dao';
-import { getCommentDAO, ICommentDAO } from './dao/comment.dao';
+import { getCommentDAO } from './dao/comment.dao';
 
 export interface IDAOFactory {
     getAccountDAO(): IAccountDAO;

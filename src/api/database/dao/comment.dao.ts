@@ -1,11 +1,8 @@
-import { Connection, DocumentDefinition, Model, Schema } from 'mongoose';
-import { CommentDocument } from '../../interfaces/comment';
+import { Connection, Model, Schema } from 'mongoose';
+
+import { CommentDocument, ICommentDAO } from '../../interfaces/comment';
 import getModel from '../modelFactory';
 import buildSchema from '../schemas/comment.schema';
-
-export interface ICommentDAO {
-    createNewComment(comment: DocumentDefinition<CommentDocument>): Promise<CommentDocument>;
-}
 
 export function getCommentDAO(connection: Connection): ICommentDAO {
     const commentSchema: Schema = buildSchema(connection);
