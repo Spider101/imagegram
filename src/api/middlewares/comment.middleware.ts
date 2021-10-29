@@ -1,8 +1,8 @@
 import { isValidObjectId } from 'mongoose';
 
 import { PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
+import { IPostDAO } from '../interfaces/post';
 import { HEADERS } from '../../config/constants';
-import { IPostDAO } from '../database/dao';
 
 export function getPostIdHeaderMiddleware(postDAO: IPostDAO): PostIdHeaderMiddleware {
     return {

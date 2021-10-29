@@ -1,24 +1,12 @@
 import {
     Connection,
-    FilterQuery,
     PaginateModel,
-    PaginateOptions,
-    PaginateResult,
     Schema
 } from 'mongoose';
 
-import { PostDocument } from '../../interfaces/post';
+import { IPostDAO, PostDocument } from '../../interfaces/post';
 import getModel from '../modelFactory';
 import buildSchema from '../schemas/post.schema';
-
-export interface IPostDAO {
-    createNewPost(postCaption: string, postCreator: string, imageKey: string): Promise<PostDocument>;
-    getPaginatedResults(
-        query: FilterQuery<PostDocument>,
-        options: PaginateOptions
-    ): Promise<PaginateResult<PostDocument>>;
-    doesPostExist(postId: string): Promise<boolean>;
-}
 
 export function getPostDAO(connection: Connection): IPostDAO {
     const schema: Schema = buildSchema(connection);

@@ -1,7 +1,5 @@
-import { IPostDAO } from '../database/dao';
-
 import { getImageStoragePath, getPagination } from '../helpers';
-import { PostService } from '../interfaces/post';
+import { IPostDAO, PostService } from '../interfaces/post';
 
 export function getPostService(postDAO: IPostDAO): PostService {
     return {
