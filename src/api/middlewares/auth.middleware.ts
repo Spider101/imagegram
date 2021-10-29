@@ -1,9 +1,10 @@
-import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
-import { HEADERS, LOG } from '../../config';
-import { AccountDAO } from '../database/dao';
 import { isValidObjectId } from 'mongoose';
 
-export function getAccountHeaderMiddleware(accountDAO: AccountDAO): AccountHeaderMiddleware {
+import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
+import { HEADERS, LOG } from '../../config';
+import { IAccountDAO } from '../interfaces/account';
+
+export function getAccountHeaderMiddleware(accountDAO: IAccountDAO): AccountHeaderMiddleware {
     return {
         requireAccountHeader: async (req, res, next) => {
             const accountId = req.header(HEADERS.accountId);

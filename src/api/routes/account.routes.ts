@@ -1,12 +1,10 @@
 import express, { Router } from 'express';
 
-import { AccountDAO } from '../database/dao';
-
 import { getAccountController } from '../controllers';
 import { getAccountService } from '../services';
-import { AccountController, AccountService } from '../interfaces/account';
+import { AccountController, AccountService, IAccountDAO } from '../interfaces/account';
 
-export function getAccountRouter(accountDAO: AccountDAO): Router {
+export function getAccountRouter(accountDAO: IAccountDAO): Router {
     const accountRouter: Router = express.Router();
 
     const accountService: AccountService = getAccountService(accountDAO);
