@@ -1,4 +1,4 @@
-import { AccountDAO } from '../database';
+import { AccountDAO } from '../database/dao';
 import { AccountService } from '../interfaces/account';
 
 export function getAccountService(accountDAO: AccountDAO): AccountService {

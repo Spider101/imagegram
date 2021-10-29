@@ -1,6 +1,6 @@
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 import { HEADERS, LOG } from '../../config';
-import { AccountDAO } from '../database';
+import { AccountDAO } from '../database/dao';
 
 export function getAccountHeaderMiddleware(accountDAO: AccountDAO): AccountHeaderMiddleware {
     return {
