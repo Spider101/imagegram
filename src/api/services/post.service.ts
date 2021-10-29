@@ -1,12 +1,12 @@
-import { PaginateModel } from 'mongoose';
+import { IPostDAO } from '../database/dao';
 
 import { getImageStoragePath, getPagination } from '../helpers';
-import { PostDocument, PostService } from '../interfaces/post';
+import { PostService } from '../interfaces/post';
 
-export function getPostService(postModel: PaginateModel<PostDocument>): PostService {
+export function getPostService(postDAO: IPostDAO): PostService {
     return {
         createPost: async ({ caption, creator }, file) =>
-            await postModel.create({ caption, creator, image: getImageStoragePath(file) }),
+            await postDAO.createNewPost(caption, creator, getImageStoragePath(file)),
         fetchAllPosts: async (page, size) => {
             const condition = {};
             const { offset, limit } = getPagination(size, page);
@@ -25,7 +25,7 @@ export function getPostService(postModel: PaginateModel<PostDocument>): PostServ
             };
 
             try {
-                return postModel.paginate(condition, options);
+                return postDAO.getPaginatedResults(condition, options);
             } catch (error: unknown) {
                 const errorMessage =
                     error instanceof Error
