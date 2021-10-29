@@ -1,23 +1,22 @@
 import express, { Router } from 'express';
-import { Connection, Model, Schema } from 'mongoose';
-
-import getModel from '../database/modelFactory';
-import buildSchema from '../database/schemas/comment.schema';
 
 import { getCommentController } from '../controllers';
 import { getCommentService } from '../services';
 
 import { AccountHeaderMiddleware, PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
-import { CommentController, CommentDocument, CommentService } from '../interfaces/comment';
+import { CommentController, CommentService, ICommentDAO } from '../interfaces/comment';
+import { IPostDAO } from '../interfaces/post';
 import { getPostIdHeaderMiddleware } from '../middlewares';
 
-export function getCommentRouter(connection: Connection, accountHeaderMiddleware: AccountHeaderMiddleware): Router {
-    const postIdHeaderMiddleware: PostIdHeaderMiddleware = getPostIdHeaderMiddleware(connection);
+export function getCommentRouter(
+    commentDAO: ICommentDAO,
+    postDAO: IPostDAO,
+    accountHeaderMiddleware: AccountHeaderMiddleware
+): Router {
+    const postIdHeaderMiddleware: PostIdHeaderMiddleware = getPostIdHeaderMiddleware(postDAO);
     const commentRouter: Router = express.Router();
 
-    const commentSchema: Schema = buildSchema(connection);
-    const commentModel: Model<CommentDocument> = getModel<CommentDocument>(connection, 'Comment', commentSchema);
-    const commentService: CommentService = getCommentService(commentModel);
+    const commentService: CommentService = getCommentService(commentDAO);
     const commentController: CommentController = getCommentController(commentService);
 
     commentRouter.post(

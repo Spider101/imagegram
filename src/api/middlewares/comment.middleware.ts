@@ -1,17 +1,16 @@
-import { Connection, isValidObjectId } from 'mongoose';
+import { isValidObjectId } from 'mongoose';
 
 import { PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
-import { PostDocument } from '../interfaces/post';
+import { IPostDAO } from '../interfaces/post';
 import { HEADERS } from '../../config/constants';
 
-export function getPostIdHeaderMiddleware(connection: Connection): PostIdHeaderMiddleware {
+export function getPostIdHeaderMiddleware(postDAO: IPostDAO): PostIdHeaderMiddleware {
     return {
         requirePostIdHeader: async (req, res, next) => {
             const postId = req.header(HEADERS.postId);
 
             if (postId && isValidObjectId(postId)) {
-                const doesPostExist = await connection.model<PostDocument>('Post').exists({ _id: postId });
-                if (doesPostExist) {
+                if (await postDAO.doesPostExist(postId)) {
                     return next();
                 } else {
                     res.status(404).json({ message: `No Post with ID: ${postId} found to add comment to!` });

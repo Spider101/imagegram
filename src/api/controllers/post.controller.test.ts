@@ -55,7 +55,7 @@ describe('Post creation -', () => {
         await postController.createPostHandler(fakeRequest, fakeResponse);
 
         // assert
-        expect(mockPostService.createPost).toBeCalledTimes(0);
+        expect(mockPostService.createPost).not.toHaveBeenCalled();
         expect(fakeResponse.status).toHaveBeenCalledWith(422);
     });
 });

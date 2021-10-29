@@ -7,11 +7,13 @@ import { getPostRouter } from './post.routes';
 
 import { getAccountHeaderMiddleware } from '../middlewares';
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
+import getDAOFactory from '../database/daoFactory';
 
 export function setupRoutes(app: Express, connection: Connection): void {
-    const acountHeaderMiddleware: AccountHeaderMiddleware = getAccountHeaderMiddleware(connection);
+    const daoFactory = getDAOFactory(connection);
+    const acountHeaderMiddleware: AccountHeaderMiddleware = getAccountHeaderMiddleware(daoFactory.getAccountDAO());
 
-    app.use('/accounts', getAccountRouter(connection));
-    app.use('/posts', getPostRouter(connection, acountHeaderMiddleware));
-    app.use('/comments', getCommentRouter(connection, acountHeaderMiddleware));
+    app.use('/accounts', getAccountRouter(daoFactory.getAccountDAO()));
+    app.use('/posts', getPostRouter(daoFactory.getPostDAO(), acountHeaderMiddleware));
+    app.use('/comments', getCommentRouter(daoFactory.getCommentDAO(), daoFactory.getPostDAO(), acountHeaderMiddleware));
 }
