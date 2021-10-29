@@ -71,7 +71,7 @@ describe('Post ID Header Middleware', () => {
         // assert
         expect(mockPostDAO.doesPostExist).toBeCalledTimes(1);
         expect(mockPostDAO.doesPostExist).toBeCalledWith(validPostId);
-        expect(fakeNext).toHaveBeenCalledTimes(1);
+        expect(fakeNext).toBeCalledTimes(1);
         expect(fakeResponse.set).not.toHaveBeenCalled();
         expect(fakeResponse.json).not.toHaveBeenCalled();
         expect(fakeResponse.status).not.toHaveBeenCalled();
