@@ -25,7 +25,7 @@ export function getPostService(postDAO: IPostDAO): PostService {
             };
 
             try {
-                return postDAO.getPaginatedResults(condition, options);
+                return await postDAO.getPaginatedResults(condition, options);
             } catch (error: unknown) {
                 const errorMessage =
                     error instanceof Error
