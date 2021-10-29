@@ -10,7 +10,7 @@
     "test": "jest src/api",
     "test:watch": "jest --watch src/api",
     "test-integration": "NODE_ENV=test jest src/integration-tests",
-    "test-integration:watch": "NODE_ENV=test jest --watch src"
+    "test-integration:watch": "NODE_ENV=test jest --watch src/integration-tests"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
