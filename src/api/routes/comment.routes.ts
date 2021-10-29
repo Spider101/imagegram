@@ -10,9 +10,14 @@ import { getCommentService } from '../services';
 import { AccountHeaderMiddleware, PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
 import { CommentController, CommentDocument, CommentService } from '../interfaces/comment';
 import { getPostIdHeaderMiddleware } from '../middlewares';
+import { IPostDAO } from '../database/dao';
 
-export function getCommentRouter(connection: Connection, accountHeaderMiddleware: AccountHeaderMiddleware): Router {
-    const postIdHeaderMiddleware: PostIdHeaderMiddleware = getPostIdHeaderMiddleware(connection);
+export function getCommentRouter(
+    connection: Connection,
+    postDAO: IPostDAO,
+    accountHeaderMiddleware: AccountHeaderMiddleware
+): Router {
+    const postIdHeaderMiddleware: PostIdHeaderMiddleware = getPostIdHeaderMiddleware(postDAO);
     const commentRouter: Router = express.Router();
 
     const commentSchema: Schema = buildSchema(connection);

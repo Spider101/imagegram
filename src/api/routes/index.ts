@@ -14,6 +14,6 @@ export function setupRoutes(app: Express, connection: Connection): void {
     const acountHeaderMiddleware: AccountHeaderMiddleware = getAccountHeaderMiddleware(daoFactory.getAccountDAO());
 
     app.use('/accounts', getAccountRouter(daoFactory.getAccountDAO()));
-    app.use('/posts', getPostRouter(connection, acountHeaderMiddleware));
-    app.use('/comments', getCommentRouter(connection, acountHeaderMiddleware));
+    app.use('/posts', getPostRouter(daoFactory.getPostDAO(), acountHeaderMiddleware));
+    app.use('/comments', getCommentRouter(connection, daoFactory.getPostDAO(), acountHeaderMiddleware));
 }
