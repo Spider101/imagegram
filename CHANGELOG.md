@@ -4,6 +4,24 @@ All notable changes in this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) and this project adheres to [Semantic Version](http://semver.org/spec/v2.0.0.html)
 
+## 1.13.0
+
+### Added
+
+- DAOs for working with account, post and comment entities in MongoDB
+- Interfaces for the DAOs
+- Unit tests for the middleware and service functionality that was previously using the `mongoose.Model` object
+- `faker.js` dependency for generating fake data in UTs
+
+### Changed
+
+- Service methods for account, post and comment to use the respective DAOs instead of the `mongoose.Model` functionality directly
+- The logic to build the schemas for the various entities to run just once (inside the corresponding DAO's initialization code)
+
+### Fixed
+
+- Issue with mocking the `fs` module which was preventing the testing of the `removeImage` function
+
 ## 1.12.0
 
 ### Added
