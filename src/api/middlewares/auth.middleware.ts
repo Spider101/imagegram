@@ -1,12 +1,13 @@
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 import { HEADERS, LOG } from '../../config';
 import { AccountDAO } from '../database/dao';
+import { isValidObjectId } from 'mongoose';
 
 export function getAccountHeaderMiddleware(accountDAO: AccountDAO): AccountHeaderMiddleware {
     return {
         requireAccountHeader: async (req, res, next) => {
             const accountId = req.header(HEADERS.accountId);
-            if (accountId) {
+            if (accountId && isValidObjectId(accountId)) {
                 LOG.info(`Trying to find document for account with ID: ${accountId}...`);
 
                 const account = await accountDAO.findById(accountId);
