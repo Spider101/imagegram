@@ -4,8 +4,7 @@ import { IAccountDAO } from '../interfaces/account';
 import { ICommentDAO } from '../interfaces/comment';
 import { IPostDAO } from '../interfaces/post';
 
-import { getAccountDAO, getPostDAO } from './dao';
-import { getCommentDAO } from './dao/comment.dao';
+import { getAccountDAO, getCommentDAO, getPostDAO } from './dao';
 
 export interface IDAOFactory {
     getAccountDAO(): IAccountDAO;
