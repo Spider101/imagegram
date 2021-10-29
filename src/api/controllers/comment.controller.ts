@@ -1,6 +1,5 @@
-import { LOG, HEADERS } from '../../config';
-
 import { CommentController, CommentService } from '../interfaces/comment';
+import { LOG, HEADERS } from '../../config';
 
 export function getCommentController(commentService: CommentService): CommentController {
     return {

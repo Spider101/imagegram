@@ -1,9 +1,8 @@
-import { Model } from 'mongoose';
+import { CommentService } from '../interfaces/comment';
+import { ICommentDAO } from '../database/dao/comment.dao';
 
-import { CommentDocument, CommentService } from '../interfaces/comment';
-
-export function getCommentService(commentModel: Model<CommentDocument>): CommentService {
+export function getCommentService(commentDAO: ICommentDAO): CommentService {
     return {
-        createComment: async comment => await commentModel.create(comment)
-    }
+        createComment: async comment => await commentDAO.createNewComment(comment)
+    };
 }
