@@ -13,6 +13,7 @@ describe('Posts endpoints -', () => {
     const pathToResourcesDir: string = path.join(__dirname, '..', 'resources');
     const txtFname = 'test-text-file.txt';
     const jpegFname = 'test-jpeg-image.jpg';
+    const pngFname = 'test-png-image.png';
 
     let accountId: string;
     let app: Express;
@@ -46,7 +47,15 @@ describe('Posts endpoints -', () => {
             expect(response.body.message).toBeDefined();
         });
 
-        test('returns 201 Created response', async () => {
+        test('returns 201 Created response when uploading .png file', async () => {
+            const response = await createPostRequest
+                .set(HEADERS.accountId, accountId)
+                .attach('image', path.join(pathToResourcesDir, pngFname))
+                .field('caption', 'fake post caption');
+            expect(response.statusCode).toBe(201);
+        });
+
+        test('returns 201 Created response when uploading a .jpg file', async () => {
             const response = await createPostRequest
                 .set(HEADERS.accountId, accountId)
                 .attach('image', path.join(pathToResourcesDir, jpegFname))
