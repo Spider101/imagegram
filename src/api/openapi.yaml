@@ -43,12 +43,15 @@ paths:
       requestBody:
         description: Data needed to create the post entity
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 caption:
                   type: string
+                image:
+                  type: string
+                  format: binary
         required: true
       responses:
         '201':
@@ -68,6 +71,8 @@ paths:
                           example: "1b0b31bc-bac0-4d7e-81bb-7cbf67b80fe8"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Missing document for Account entity. Cannot create Post entity for a non-existent user (Account entity).
       security:
         - accountAuth: []
     get:
@@ -110,6 +115,8 @@ paths:
                     example: 1
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Missing document for Account entity. Cannot fetch posts for a non-existent user (Account entity).
         '500':
           description: Internal Server Error. Something might have gone wrong with fetching the posts from the MongoDB cluster.
       security:
@@ -118,7 +125,7 @@ paths:
     post:
       summary: Add a new comment on a post
       parameters:
-        - name: Post-Id
+        - name: X-Post-Id
           in: header
           description: Post Id of post on which comment is being made
           required: true
@@ -149,7 +156,7 @@ paths:
         '400':
           description: Bad request. Possibly malformed or missing Post-Id header.
         '404':
-          description: Missing document for Post entity. Cannot create Comment entity on a non-existent Post entity.
+          description: Either a missing document for Post or Account entity. Cannot create Comment entity on a non-existent Post entity or for a non-existent user (Account entity).
       security:
         - accountAuth: []
 components:
