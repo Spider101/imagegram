@@ -37,9 +37,13 @@ describe('Post ID Header Middleware', () => {
         await postIdHeaderMiddleware.requirePostIdHeader(fakeRequest, fakeResponse, fakeNext);
 
         // assert
-        expect(fakeNext).not.toHaveBeenCalled();
-        expect(fakeResponse.status).toBeCalledWith(400);
-        expect(fakeResponse.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }));
+        expect(fakeNext).toHaveBeenCalledWith(
+            expect.objectContaining({
+                code: 400,
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 
     test('No post matching the ID in the post ID header is found', async () => {
@@ -54,9 +58,13 @@ describe('Post ID Header Middleware', () => {
         // assert
         expect(mockPostDAO.doesPostExist).toBeCalledTimes(1);
         expect(mockPostDAO.doesPostExist).toHaveBeenCalledWith(nonExistentPostId);
-        expect(fakeNext).not.toHaveBeenCalled();
-        expect(fakeResponse.status).toBeCalledWith(404);
-        expect(fakeResponse.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }));
+        expect(fakeNext).toHaveBeenCalledWith(
+            expect.objectContaining({
+                code: 404,
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 
     test('Valid Post matching Id in request header found', async () => {
@@ -72,8 +80,18 @@ describe('Post ID Header Middleware', () => {
         expect(mockPostDAO.doesPostExist).toBeCalledTimes(1);
         expect(mockPostDAO.doesPostExist).toBeCalledWith(validPostId);
         expect(fakeNext).toBeCalledTimes(1);
-        expect(fakeResponse.set).not.toHaveBeenCalled();
-        expect(fakeResponse.json).not.toHaveBeenCalled();
-        expect(fakeResponse.status).not.toHaveBeenCalled();
+        expect(fakeNext).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                code: expect.any(Number),
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 });
+
+function assertExpressResponse(fakeResponse: Response) {
+    expect(fakeResponse.set).not.toHaveBeenCalled();
+    expect(fakeResponse.json).not.toHaveBeenCalled();
+    expect(fakeResponse.status).not.toHaveBeenCalled();
+}
