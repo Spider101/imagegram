@@ -3,7 +3,7 @@ import { Connection } from 'mongoose';
 
 import { LOG } from '../config';
 import { HealthCheck } from './interfaces/healthcheck.interface';
-import { handleErrors } from './middlewares';
+import { getErrorHandlingMiddleware } from './middlewares';
 import { setupRoutes } from './routes';
 
 export default function buildApplication(connection: Connection): Express {
@@ -27,7 +27,7 @@ export default function buildApplication(connection: Connection): Express {
     // register other routes
     setupRoutes(app, connection);
 
-    app.use(handleErrors);
+    app.use(getErrorHandlingMiddleware().handleErrors);
 
     return app;
 }
