@@ -27,6 +27,8 @@ describe('Post creation -', () => {
     fakeResponse.status = jest.fn().mockReturnValue(fakeResponse);
     fakeResponse.json = jest.fn().mockReturnValue(fakeResponse);
 
+    const fakeNext = jest.fn();
+
     test('post is created with valid file data', async () => {
         // setup
         const fakeRequestWithFileData = {
@@ -43,7 +45,7 @@ describe('Post creation -', () => {
         };
 
         // execute
-        await postController.createPostHandler(fakeRequestWithFileData, fakeResponse);
+        await postController.createPostHandler(fakeRequestWithFileData, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.createPost).toBeCalledTimes(1);
@@ -52,11 +54,16 @@ describe('Post creation -', () => {
 
     test('post is not created when file data is not valid', async () => {
         // execute
-        await postController.createPostHandler(fakeRequest, fakeResponse);
+        await postController.createPostHandler(fakeRequest, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.createPost).not.toHaveBeenCalled();
-        expect(fakeResponse.status).toHaveBeenCalledWith(422);
+        expect(fakeNext).toBeCalledWith(
+            expect.objectContaining({
+                code: 422,
+                message: expect.any(String)
+            })
+        );
     });
 });
 

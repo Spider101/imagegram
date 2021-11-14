@@ -1,10 +1,11 @@
 import { LOG, HEADERS } from '../../config';
 
 import { PostService, PostController } from '../interfaces/post';
+import apiError from '../errors';
 
 export function getPostController(postService: PostService): PostController {
     return {
-        createPostHandler: async (req, res) => {
+        createPostHandler: async (req, res, next) => {
             const accountId = req.header(HEADERS.accountId);
             LOG.info(`Creating post for user with accountId: ${accountId}`);
 
@@ -20,9 +21,7 @@ export function getPostController(postService: PostService): PostController {
                 return res.status(201).send(createdPost);
             } else {
                 // only reason req.file is falsy is if the file type did not match the filter
-                return res.status(422).json({
-                    message: 'Incorrect file type used! Allowed types include .jpg, .png and .bmp'
-                });
+                next(apiError.unprocessable('Incorrect file type used! Allowed types include .jpg, .png and .bmp'));
             }
         },
         fetchAllPostsHandler: async (req, res) => {
