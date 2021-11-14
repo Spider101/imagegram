@@ -1,9 +1,9 @@
 import { LOG, HEADERS } from '../../config';
 
-import { PostService, PostController } from '../interfaces/post';
+import { PostService, IPostController } from '../interfaces/post';
 import apiError from '../errors';
 
-export function getPostController(postService: PostService): PostController {
+export function getPostController(postService: PostService): IPostController {
     return {
         createPostHandler: async (req, res, next) => {
             const accountId = req.header(HEADERS.accountId);
@@ -24,7 +24,7 @@ export function getPostController(postService: PostService): PostController {
                 next(apiError.unprocessable('Incorrect file type used! Allowed types include .jpg, .png and .bmp'));
             }
         },
-        fetchAllPostsHandler: async (req, res) => {
+        fetchAllPostsHandler: async (req, res, _next) => {
             LOG.info('Fetching all posts...');
 
             const pageNum = req.query.page as string;
