@@ -1,14 +1,14 @@
 import { Request, Response, Send } from 'express';
 
 import { getPostController } from '.';
-import { PostController } from '../interfaces/post';
+import { IPostController } from '../interfaces/post';
 
 const mockPostService = {
     createPost: jest.fn(),
     fetchAllPosts: jest.fn()
 };
 
-const postController: PostController = getPostController(mockPostService);
+const postController: IPostController = getPostController(mockPostService);
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -75,6 +75,8 @@ describe('Fetching posts - ', () => {
         send: jest.fn() as Send
     } as Response;
 
+    const fakeNext = jest.fn();
+
     test('all posts are fetched', async () => {
         // setup
         const expectedResponse = {
@@ -94,7 +96,7 @@ describe('Fetching posts - ', () => {
         );
 
         // execute
-        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse);
+        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.fetchAllPosts).toBeCalledTimes(1);
@@ -110,11 +112,9 @@ describe('Fetching posts - ', () => {
             throw new Error(fakeErrorMessage);
         });
 
-        // execute
-        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse);
-
-        // assert
-        expect(fakeResponse.status).toBeCalledWith(500);
-        expect(fakeResponse.send).toBeCalledWith({ message: fakeErrorMessage });
+        // execute and assert
+        await expect(postController.fetchAllPostsHandler(fakeRequest, fakeResponse, fakeNext)).rejects.toThrow(
+            fakeErrorMessage
+        );
     });
 });
