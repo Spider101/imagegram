@@ -30,26 +30,14 @@ export function getPostController(postService: PostService): IPostController {
             const pageNum = req.query.page as string;
             const size = req.query.size as string;
 
-            try {
-                const { totalDocs, docs, totalPages, page } = await postService.fetchAllPosts(pageNum, size);
+            const { totalDocs, docs, totalPages, page } = await postService.fetchAllPosts(pageNum, size);
 
-                return res.send({
-                    totalItems: totalDocs,
-                    posts: docs,
-                    totalPages,
-                    currentPage: page ? page - 1 : parseInt(pageNum)
-                });
-            } catch (error: unknown) {
-                let errorMessage = '' as string;
-                if (typeof error === 'string') {
-                    errorMessage = error.toUpperCase();
-                } else if (error instanceof Error) {
-                    errorMessage = error.message;
-                }
-                return res.status(500).send({
-                    message: errorMessage
-                });
-            }
+            return res.send({
+                totalItems: totalDocs,
+                posts: docs,
+                totalPages,
+                currentPage: page ? page - 1 : parseInt(pageNum)
+            });
         }
     };
 }
