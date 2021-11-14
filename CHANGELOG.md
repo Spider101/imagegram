@@ -4,7 +4,23 @@ All notable changes in this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) and this project adheres to [Semantic Version](http://semver.org/spec/v2.0.0.html)
 
-## 1.13.0
+## 1.11.0-beta.3
+
+### Added
+
+- `sharp` dependency to manipulate images
+- Image conversion middleware to convert `.png`, `.bmp` and `.jpeg` files to `.jpeg`
+- IT for testing scenario where non-jpeg image is uploaded
+
+### Changed
+
+- IT setup script to download a `.png` file to image upload tests
+- To use memoryStorage in `multer` config to allow file stream to be fed to `sharp` methods
+- Request body specifications for create posts endpoint to specify `multi-part` to represent the image upload
+- Header name for postId in comments creation endpoint to conform with best practices
+- Endpoint descriptions to be more verbose
+
+## 1.11.0-beta.2
 
 ### Added
 
@@ -22,7 +38,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) an
 
 - Issue with mocking the `fs` module which was preventing the testing of the `removeImage` function
 
-## 1.12.0
+## 1.11.0-beta.1
 
 ### Added
 
