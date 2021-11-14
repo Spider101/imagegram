@@ -4,7 +4,7 @@ import { getPostService } from '../services';
 import { getPostController } from '../controllers';
 
 import { IPostDAO, PostController, PostService } from '../interfaces/post';
-import { uploadImage } from '../middlewares';
+import { saveImageToDisk, uploadImage } from '../middlewares';
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 
 export function getPostRouter(postDAO: IPostDAO, accountHeaderMiddleware: AccountHeaderMiddleware): Router {
@@ -16,7 +16,7 @@ export function getPostRouter(postDAO: IPostDAO, accountHeaderMiddleware: Accoun
     postRouter.get('/', accountHeaderMiddleware.requireAccountHeader, postController.fetchAllPostsHandler);
     postRouter.post(
         '/',
-        [accountHeaderMiddleware.requireAccountHeader, uploadImage()],
+        [accountHeaderMiddleware.requireAccountHeader, uploadImage(), saveImageToDisk],
         postController.createPostHandler
     );
 
