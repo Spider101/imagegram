@@ -27,9 +27,10 @@ export default function buildApplication(connection: Connection): Express {
     });
 
     // register other routes
-    setupRoutes(app, connection);
+    setupRoutes(app, connection, errorHandlingMiddleware);
 
-    app.use(getErrorHandlingMiddleware().handleErrors);
+    // register error handling middleware
+    app.use(errorHandlingMiddleware.handleErrors);
 
     return app;
 }

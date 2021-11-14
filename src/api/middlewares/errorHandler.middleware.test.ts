@@ -2,14 +2,15 @@ import { NextFunction, Request, Response } from 'express';
 import { getErrorHandlingMiddleware } from '.';
 import { HEADERS } from '../../config';
 import { ApiError } from '../errors';
+import { IErrorHandlingMiddleware } from '../interfaces/middleware.interface';
 
 describe('Error Handling Middleware', () => {
     const fakeRequest = {} as Request;
     const fakeResponse = {} as Response;
-    const fakeNext = {} as NextFunction;
+    const fakeNext = jest.fn() as NextFunction;
     const fakeError = {} as ApiError;
 
-    const errorHandlingMiddleware = getErrorHandlingMiddleware();
+    const errorHandlingMiddleware: IErrorHandlingMiddleware = getErrorHandlingMiddleware();
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -61,5 +62,18 @@ describe('Error Handling Middleware', () => {
         // assert
         expect(fakeResponse.status).toBeCalledWith(500);
         expect(fakeResponse.json).toBeCalledWith('Something went wrong!');
+    });
+
+    test('Unknown route is handled', () => {
+        // execute
+        errorHandlingMiddleware.handleRouteNotFound(fakeRequest, fakeResponse, fakeNext);
+
+        // assert
+        expect(fakeNext).toBeCalledWith(
+            expect.objectContaining({
+                code: 404,
+                message: 'No such route found!'
+            })
+        );
     });
 });
