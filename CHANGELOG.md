@@ -4,6 +4,20 @@ All notable changes in this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0) and this project adheres to [Semantic Version](http://semver.org/spec/v2.0.0.html)
 
+## 1.11.0-beta.4
+
+### Added
+
+- An error class for encapsulating all errors that can be thrown by the API
+- An error handling middleware to manage all error handling functionality in one place
+- Catch-all route handler to throw _404 Not Found_ when encountering an undefined route
+- An example `.env` file to demonstrate the environment variables required by the application to run
+
+### Changed
+
+- The services, controllers and other middleware to pass all errors to the error handling middleware instead of handling them locally.
+- README file to point to the example `.env` file instead of the hard-coded example in the README
+
 ## 1.11.0-beta.3
 
 ### Added
