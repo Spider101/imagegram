@@ -72,7 +72,7 @@ describe('Error Handling Middleware', () => {
         expect(fakeNext).toBeCalledWith(
             expect.objectContaining({
                 code: 404,
-                message: 'No such route found!'
+                message: expect.any(String)
             })
         );
     });
