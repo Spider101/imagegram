@@ -17,7 +17,7 @@ export function getErrorHandlingMiddleware(): IErrorHandlingMiddleware {
             }
         },
         handleRouteNotFound: (req, res, next) => {
-            next(apiError.notFound('No such route found!'));
+            next(apiError.notFound(`Can't find ${req.originalUrl} on this server!`));
         }
     };
 }
