@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 
 import { getAccountHeaderMiddleware } from '.';
-import { HEADERS } from '../../config';
 
 describe('Account Header Middleware', () => {
     const mockAccountDAO = {
@@ -37,10 +36,13 @@ describe('Account Header Middleware', () => {
         await accountHeaderMiddleware.requireAccountHeader(fakeRequest, fakeResponse, fakeNext);
 
         // assert
-        expect(fakeNext).not.toHaveBeenCalled();
-        expect(fakeResponse.set).toBeCalledWith(HEADERS.authResponseKey, 'MultiPlexing realm="null"');
-        expect(fakeResponse.status).toBeCalledWith(401);
-        expect(fakeResponse.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }));
+        expect(fakeNext).toBeCalledWith(
+            expect.objectContaining({
+                code: 401,
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 
     test('No account matching the ID in the account header is found', async () => {
@@ -55,10 +57,13 @@ describe('Account Header Middleware', () => {
         // assert
         expect(mockAccountDAO.findById).toBeCalledTimes(1);
         expect(mockAccountDAO.findById).toBeCalledWith(nonExistentAccountId);
-        expect(fakeNext).not.toHaveBeenCalled();
-        expect(fakeResponse.set).toBeCalledWith(HEADERS.authResponseKey, 'MultiPlexing realm="null"');
-        expect(fakeResponse.status).toBeCalledWith(401);
-        expect(fakeResponse.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }));
+        expect(fakeNext).toHaveBeenCalledWith(
+            expect.objectContaining({
+                code: 401,
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 
     test('Valid Account matching Id in request header found', async () => {
@@ -74,8 +79,18 @@ describe('Account Header Middleware', () => {
         expect(mockAccountDAO.findById).toBeCalledTimes(1);
         expect(mockAccountDAO.findById).toBeCalledWith(validAccountId);
         expect(fakeNext).toBeCalledTimes(1);
-        expect(fakeResponse.set).not.toHaveBeenCalled();
-        expect(fakeResponse.json).not.toHaveBeenCalled();
-        expect(fakeResponse.status).not.toHaveBeenCalled();
+        expect(fakeNext).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                code: expect.any(Number),
+                message: expect.any(String)
+            })
+        );
+        assertExpressResponse(fakeResponse);
     });
 });
+
+function assertExpressResponse(fakeResponse: Response){
+    expect(fakeResponse.set).not.toHaveBeenCalled();
+    expect(fakeResponse.json).not.toHaveBeenCalled();
+    expect(fakeResponse.status).not.toHaveBeenCalled();
+}

@@ -3,10 +3,13 @@ import { Connection } from 'mongoose';
 
 import { LOG } from '../config';
 import { HealthCheck } from './interfaces/healthcheck.interface';
+import { IErrorHandlingMiddleware } from './interfaces/middleware.interface';
+import { getErrorHandlingMiddleware } from './middlewares';
 import { setupRoutes } from './routes';
 
 export default function buildApplication(connection: Connection): Express {
     const app: Express = express();
+    const errorHandlingMiddleware: IErrorHandlingMiddleware = getErrorHandlingMiddleware();
 
     app.use(express.json());
 
@@ -24,7 +27,10 @@ export default function buildApplication(connection: Connection): Express {
     });
 
     // register other routes
-    setupRoutes(app, connection);
+    setupRoutes(app, connection, errorHandlingMiddleware);
+
+    // register error handling middleware
+    app.use(errorHandlingMiddleware.handleErrors);
 
     return app;
 }

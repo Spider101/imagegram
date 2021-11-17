@@ -87,64 +87,17 @@ describe('Post service', () => {
         expect(options.populate.path).toEqual('comments');
     });
 
-    describe('fetchAllPosts() handles any error thrown - ', () => {
+    test('fetchAllPosts() throws Error when DAO throws an error', async () => {
+        // setup
         const page = '1';
         const size = '3';
         const expectedErrorMessage = 'fake error message';
-
-        test('string error thrown', async () => {
-            // setup
-            mockPostDAO.getPaginatedResults.mockImplementation(() => {
-                throw expectedErrorMessage;
-            });
-
-            // execute
-            try {
-                await postService.fetchAllPosts(page, size);
-            } catch (e: unknown) {
-                // assert
-                expect(e instanceof Error).toBeTruthy();
-
-                const error = e as Error;
-                expect(error.message).toEqual(expectedErrorMessage.toUpperCase());
-            }
+        mockPostDAO.getPaginatedResults.mockImplementation(() => {
+            throw new Error(expectedErrorMessage);
         });
 
-        test('Error instance thrown as error', async () => {
-            // setup
-            mockPostDAO.getPaginatedResults.mockImplementation(() => {
-                throw new Error(expectedErrorMessage);
-            });
-
-            // execute
-            try {
-                await postService.fetchAllPosts(page, size);
-            } catch (e: unknown) {
-                // assert
-                expect(e instanceof Error).toBeTruthy();
-
-                const error = e as Error;
-                expect(error.message).toEqual(expectedErrorMessage);
-            }
-        });
-
-        test('Unexpected error type is thrown', async () => {
-            // setup
-            mockPostDAO.getPaginatedResults.mockImplementation(() => {
-                throw 123;
-            });
-
-            // execute
-            try {
-                await postService.fetchAllPosts(page, size);
-            } catch (e: unknown) {
-                // assert
-                expect(e instanceof Error).toBeTruthy();
-
-                const error = e as Error;
-                expect(error.message).toEqual('Something went wrong while fetching all posts!');
-            }
-        });
+        // execute and assert
+        await expect(postService.fetchAllPosts(page, size)).rejects.toThrow(expectedErrorMessage);
     });
 });
 

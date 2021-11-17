@@ -13,3 +13,5 @@ src/integration-tests/resources
 # misc
 .vscode
 .env*
+
+!.env.example

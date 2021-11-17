@@ -3,6 +3,7 @@ import { isValidObjectId } from 'mongoose';
 import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
 import { HEADERS, LOG } from '../../config';
 import { IAccountDAO } from '../interfaces/account';
+import apiError from '../errors';
 
 export function getAccountHeaderMiddleware(accountDAO: IAccountDAO): AccountHeaderMiddleware {
     return {
@@ -19,8 +20,7 @@ export function getAccountHeaderMiddleware(accountDAO: IAccountDAO): AccountHead
                     return next();
                 }
             }
-            res.set(HEADERS.authResponseKey, 'MultiPlexing realm="null"');
-            res.status(401).json({ message: 'Credentials are required to access this resource!' });
+            next(apiError.unauthorized('Credentials are required to access this resource!'));
         }
     };
 }

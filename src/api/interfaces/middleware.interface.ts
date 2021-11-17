@@ -7,3 +7,8 @@ export interface AccountHeaderMiddleware {
 export interface PostIdHeaderMiddleware {
     requirePostIdHeader(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
+
+export interface IErrorHandlingMiddleware {
+    handleErrors(err: unknown, req: Request, res: Response, next: NextFunction): void;
+    handleRouteNotFound(req: Request, res: Response, next: NextFunction): void;
+}

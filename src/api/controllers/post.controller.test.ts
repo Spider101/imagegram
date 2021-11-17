@@ -1,14 +1,14 @@
 import { Request, Response, Send } from 'express';
 
 import { getPostController } from '.';
-import { PostController } from '../interfaces/post';
+import { IPostController } from '../interfaces/post';
 
 const mockPostService = {
     createPost: jest.fn(),
     fetchAllPosts: jest.fn()
 };
 
-const postController: PostController = getPostController(mockPostService);
+const postController: IPostController = getPostController(mockPostService);
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -27,6 +27,8 @@ describe('Post creation -', () => {
     fakeResponse.status = jest.fn().mockReturnValue(fakeResponse);
     fakeResponse.json = jest.fn().mockReturnValue(fakeResponse);
 
+    const fakeNext = jest.fn();
+
     test('post is created with valid file data', async () => {
         // setup
         const fakeRequestWithFileData = {
@@ -43,7 +45,7 @@ describe('Post creation -', () => {
         };
 
         // execute
-        await postController.createPostHandler(fakeRequestWithFileData, fakeResponse);
+        await postController.createPostHandler(fakeRequestWithFileData, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.createPost).toBeCalledTimes(1);
@@ -52,11 +54,16 @@ describe('Post creation -', () => {
 
     test('post is not created when file data is not valid', async () => {
         // execute
-        await postController.createPostHandler(fakeRequest, fakeResponse);
+        await postController.createPostHandler(fakeRequest, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.createPost).not.toHaveBeenCalled();
-        expect(fakeResponse.status).toHaveBeenCalledWith(422);
+        expect(fakeNext).toBeCalledWith(
+            expect.objectContaining({
+                code: 422,
+                message: expect.any(String)
+            })
+        );
     });
 });
 
@@ -67,6 +74,8 @@ describe('Fetching posts - ', () => {
     const fakeResponse = {
         send: jest.fn() as Send
     } as Response;
+
+    const fakeNext = jest.fn();
 
     test('all posts are fetched', async () => {
         // setup
@@ -87,7 +96,7 @@ describe('Fetching posts - ', () => {
         );
 
         // execute
-        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse);
+        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse, fakeNext);
 
         // assert
         expect(mockPostService.fetchAllPosts).toBeCalledTimes(1);
@@ -103,11 +112,9 @@ describe('Fetching posts - ', () => {
             throw new Error(fakeErrorMessage);
         });
 
-        // execute
-        await postController.fetchAllPostsHandler(fakeRequest, fakeResponse);
-
-        // assert
-        expect(fakeResponse.status).toBeCalledWith(500);
-        expect(fakeResponse.send).toBeCalledWith({ message: fakeErrorMessage });
+        // execute and assert
+        await expect(postController.fetchAllPostsHandler(fakeRequest, fakeResponse, fakeNext)).rejects.toThrow(
+            fakeErrorMessage
+        );
     });
 });

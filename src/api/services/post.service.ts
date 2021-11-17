@@ -22,17 +22,7 @@ export function getPostService(postDAO: IPostDAO): PostService {
                 sort: { numComments: -1 }
             };
 
-            try {
-                return await postDAO.getPaginatedResults(condition, options);
-            } catch (error: unknown) {
-                const errorMessage =
-                    error instanceof Error
-                        ? error.message
-                        : typeof error === 'string'
-                        ? error.toUpperCase()
-                        : 'Something went wrong while fetching all posts!';
-                throw new Error(errorMessage);
-            }
+            return await postDAO.getPaginatedResults(condition, options);
         }
     };
 }
