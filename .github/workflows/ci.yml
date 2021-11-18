@@ -1,0 +1,40 @@
+name: Node.Js CI/CD workflow
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    env:
+      ENV: test
+      PATH_TO_UPLOADS: ./src/integration-tests/image-storage
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+
+    - name: Install packages
+      run: yarn install
+
+    - name: Lint application
+      run: yarn lint
+
+    - name: Run Unit Tests
+      run: yarn test
+
+    - name: Setup Environment for ITs
+      run: bash ./src/integration-tests/setup-integration-tests.sh
+
+    - name: Run Integration Tests
+      run: yarn test-integration

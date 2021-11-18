@@ -1,18 +1,26 @@
-import { Account } from '../database/models/account.model';
-import { NextFunction, Request, Response } from 'express';
-import { HEADERS } from '../../config';
+import { isValidObjectId } from 'mongoose';
 
-export async function requireAccountHeader(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const accountId = req.header(HEADERS.accountId);
-    if (accountId) {
-        const account = await Account.findById(accountId);
+import { AccountHeaderMiddleware } from '../interfaces/middleware.interface';
+import { HEADERS, LOG } from '../../config';
+import { IAccountDAO } from '../interfaces/account';
+import apiError from '../errors';
 
-        // findById returns null when document is not found
-        if (account != null) {
-            // accountId belonged to a valid account, so we can proceed
-            return next();
+export function getAccountHeaderMiddleware(accountDAO: IAccountDAO): AccountHeaderMiddleware {
+    return {
+        requireAccountHeader: async (req, res, next) => {
+            const accountId = req.header(HEADERS.accountId);
+            if (accountId && isValidObjectId(accountId)) {
+                LOG.info(`Trying to find document for account with ID: ${accountId}...`);
+
+                const account = await accountDAO.findById(accountId);
+
+                // findById returns null when document is not found
+                if (account != null) {
+                    // accountId belonged to a valid account, so we can proceed
+                    return next();
+                }
+            }
+            next(apiError.unauthorized('Credentials are required to access this resource!'));
         }
-    }
-    res.set(HEADERS.authResponseKey, 'MultiPlexing realm="null"')
-    res.status(401).json({ message: 'Credentials are required to access this resource!'})
+    };
 }

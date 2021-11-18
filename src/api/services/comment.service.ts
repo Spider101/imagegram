@@ -1,8 +1,7 @@
-import { DocumentDefinition } from 'mongoose';
+import { CommentService, ICommentDAO } from '../interfaces/comment';
 
-import { CommentDocument } from '../interfaces/comment.interface';
-import { Comment } from '../database/models';
-
-export async function createComment(comment: DocumentDefinition<CommentDocument>): Promise<CommentDocument> {
-    return await Comment.create(comment);
+export function getCommentService(commentDAO: ICommentDAO): CommentService {
+    return {
+        createComment: async comment => await commentDAO.createNewComment(comment)
+    };
 }

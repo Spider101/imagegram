@@ -1,9 +1,29 @@
-import express from 'express';
-import { createCommentHandler } from '../controllers';
-import { requireAccountHeader, requirePostIdHeader } from '../middlewares';
+import express, { Router } from 'express';
 
-const commentRouter = express.Router();
+import { getCommentController } from '../controllers';
+import { getCommentService } from '../services';
 
-commentRouter.post('/', [requireAccountHeader, requirePostIdHeader], createCommentHandler);
+import { AccountHeaderMiddleware, PostIdHeaderMiddleware } from '../interfaces/middleware.interface';
+import { CommentController, CommentService, ICommentDAO } from '../interfaces/comment';
+import { IPostDAO } from '../interfaces/post';
+import { getPostIdHeaderMiddleware } from '../middlewares';
 
-export default commentRouter;
+export function getCommentRouter(
+    commentDAO: ICommentDAO,
+    postDAO: IPostDAO,
+    accountHeaderMiddleware: AccountHeaderMiddleware
+): Router {
+    const postIdHeaderMiddleware: PostIdHeaderMiddleware = getPostIdHeaderMiddleware(postDAO);
+    const commentRouter: Router = express.Router();
+
+    const commentService: CommentService = getCommentService(commentDAO);
+    const commentController: CommentController = getCommentController(commentService);
+
+    commentRouter.post(
+        '/',
+        [accountHeaderMiddleware.requireAccountHeader, postIdHeaderMiddleware.requirePostIdHeader],
+        commentController.createCommentHandler
+    );
+
+    return commentRouter;
+}

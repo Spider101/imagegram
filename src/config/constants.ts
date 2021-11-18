@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+
+dotenv.config({ path: path.resolve(__dirname, '..', '..', envFile) });
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost' as string;
 const SERVER_PORT = process.env.SERVER_PORT || 3001 as number;
@@ -14,16 +17,16 @@ export const SERVER = {
 
 // REMOTE_DB_URI would look like `mongodb+srv://adminUser:${DB_PASSWORD}@imagegram.8tj6w.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 export const DB = {
-    uri: process.env.REMOTE_DB_URI || 'mongodb://mongodb:27017/test' as string
+    uri: process.env.REMOTE_DB_URI || 'mongodb://localhost:27017/test' as string
 };
 
 export const HEADERS = {
     accountId: 'X-Account-Id',
-    postId: 'Post-Id',
+    postId: 'X-Post-Id',
     authResponseKey: 'WWW-authenticate'
 };
 
 export const ENV = {
-    isDevelopment: (): boolean => process.env.ENV === 'development',
+    isDevelopment: (): boolean => process.env.ENV === 'development' || process.env.ENV === 'test',
     isProduction: (): boolean => process.env.ENV === 'production'
 };

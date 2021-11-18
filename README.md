@@ -6,35 +6,35 @@ This is a simple application exposing a REST API to manage posts made by users w
 
 ## Prerequisites
 
-You must have Docker installed on your computer. You can follow these [instructions](https://www.docker.com/products/docker-desktop) to have it quickly installed. You must also have a `.env` created at the root of the repository. Please add the following environment variables to this file:
-
-```console
-ENV=development
-
-PATH_TO_UPLOADS=<relative path to folder for storing uploaded images>
-```
+You must have Docker installed on your computer. You can follow these [instructions](https://www.docker.com/products/docker-desktop) to have it quickly installed. You must also have a `.env` created at the root of the repository. You can refer to the `.env` [example file](.env.example) for the variables you need to include.
 
 ## Getting Started
 
 Once you have Docker setup. Run the following commands on your terminal to spin up the containers that will compose the application.
 
-```console
+```shell
 docker-compose build
 docker-compose up
 ```
 
 To verify the application is running, you can hit the following endpoint to perform a `healtcheck`:
 
-```console
+```shell
 curl --location --request GET 'localhost:3001/healthcheck'
 ```
 
 Thereafter, you can interact with the application on the following endpoints:
 
 * POST `/accounts` to create new accounts
+* DELETE `/accounts/:accountId` to delete an account and all post and comment data associated with it
 * POST `/posts` to create new posts
+* GET `/posts` to fetch all posts in the application
 * POST `/comments` to add new comments on posts
 
 You can find more information on how to build the respective cURL calls by following the OpenAPI spec found [here](src/api/openapi.yaml)
 
-To stop the application, simply hit `Cmd/Ctrl + C` to kill the containers.
+To stop the application, run the following command to stop the running containers and remove them.
+
+```shell
+docker-compose stop
+```

@@ -1,17 +1,9 @@
-import { Request, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
+import path from 'path';
+import sharp from 'sharp';
 
 import { SERVER } from '../../config';
-
-const diskStorage = multer.diskStorage({
-    destination: function(_req: Request, _file: Express.Multer.File, cb) {
-        cb(null, SERVER.storagePath);
-    },
-    filename: function(_req: Request, file: Express.Multer.File, cb) {
-        const uniqueSuffix = '-' + Date.now() + '.jpg';
-        cb(null, file.fieldname + uniqueSuffix);
-    }
-});
 
 function filterExtensions(_req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
     if (
@@ -30,10 +22,23 @@ function filterExtensions(_req: Request, file: Express.Multer.File, cb: FileFilt
 
 export function uploadImage(): RequestHandler {
     const options = {
-        storage: diskStorage,
+        storage: multer.memoryStorage(),
         limits: { files: 1 },
         fileFilter: filterExtensions
     };
 
     return multer(options).single('image');
+}
+
+export async function saveImageToDisk(req: Request, _res: Response, next: NextFunction): Promise<void> {
+    if (req.file) {
+        const uniqueSuffix = '-' + Date.now() + '.jpg';
+        const fileName = req.file.fieldname + uniqueSuffix;
+        const pathToFile = path.join(SERVER.storagePath, fileName);
+
+        await sharp(req.file.buffer).jpeg().toFile(pathToFile);
+        req.file.filename = fileName;
+    }
+
+    next();
 }

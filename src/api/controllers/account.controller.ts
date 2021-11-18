@@ -1,17 +1,21 @@
-import { Request, Response } from 'express';
 import { LOG } from '../../config';
-import { createAccount, deleteAccount } from '../services';
 
-export async function createAccountHandler(req: Request, res: Response): Promise<Response> {
-    LOG.info(`Creating account for user with name: ${req.body.name}`);
+import { AccountController, AccountService } from '../interfaces/account';
 
-    const createdAccount = await createAccount(req.body);
-    return res.send(createdAccount);
-}
+export function getAccountController(accountService: AccountService): AccountController {
+    return {
+        createAccountHandler: async (req, res) => {
+            LOG.info(`Creating account for user with name: ${req.body.name}`);
 
-export async function deleteAccountHandler(req: Request, res: Response): Promise<Response> {
-    const accountId = req.params.accountId;
-    LOG.info(`Deleting account data associated with ID: ${accountId}`);
-    await deleteAccount(accountId);
-    return res.sendStatus(204);
+            const createdAccount = await accountService.createAccount(req.body);
+            return res.status(201).send(createdAccount);
+        },
+        deleteAccountHandler: async (req, res) => {
+            const accountId = req.params.accountId;
+            LOG.info(`Deleting account data associated with ID: ${accountId}`);
+
+            await accountService.deleteAccount(accountId);
+            return res.sendStatus(204);
+        }
+    };
 }
